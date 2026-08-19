@@ -1,0 +1,13 @@
+# 관측 데이터는 바이트 단위로 보존한다.
+# git의 줄바꿈 자동 변환(autocrlf)이 작업 복사본을 고쳐놓으면
+# 재탕 판정(문자열 완전 일치)이 뒤집힐 수 있다.
+data/** -text
+
+# 나머지는 LF로 통일한다
+*.ts   text eol=lf
+*.tsx  text eol=lf
+*.mjs  text eol=lf
+*.css  text eol=lf
+*.md   text eol=lf
+*.json text eol=lf
+*.html text eol=lf

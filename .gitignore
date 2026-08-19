@@ -1,0 +1,37 @@
+# 의존성
+node_modules/
+.pnp/
+.pnp.js
+
+# 빌드 산출물
+dist/
+build/
+.vite/
+.next/
+
+# 환경변수 — API 키가 들어간다. 절대 커밋하지 않는다
+.env
+.env.*
+!.env.example
+
+# 로컬 도구
+.DS_Store
+Thumbs.db
+*.log
+.vscode/
+.idea/
+
+# ── 공개하지 않는 것 (docs/05-공개목록.md 참조) ──────────────────
+# 작업 지시서. 산출물이 아니다
+CLAUDE.md
+
+# 카카오뱅크 채용 문구 전문. 급여·근무지·담당자 이메일이 들어 있다
+docs/00-공고원문.md
+
+# 카카오뱅크 AI 답변 원문 전량(약 5만자). 인용이 아니라 재배포가 된다.
+# 공개본은 룰 히트 주변 발췌만 담은 data/scored-round1.public.json 이다
+data/raw/
+data/scored-round1.json
+
+# 앱 리뷰 원본 — 수집 스크립트와 집계 결과만 공개한다
+data/reviews-raw/
