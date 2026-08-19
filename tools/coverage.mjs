@@ -139,3 +139,69 @@ fs.writeFileSync('data/coverage.json', JSON.stringify({
   FAQ_대조: 행, 미분류: 셈['미분류'] ?? 0,
 }, null, 1));
 console.log('\n→ data/coverage.json 저장');
+
+
+// ══════════════════════════════════════════════════════════════════════
+// 2026-08-19 추가 — FAQ 제목 전량을 받았으므로 축을 바꾼다
+//
+// 위의 FAQ 대조는 「카테고리 15개 × 문항 수」라는 우리 요약본을 썼고,
+// 분류도 우리가 만든 키워드 표였다. 이제 제목 1,673개가 있고
+// 그중 대부분이 `[상품명]` 대괄호로 시작한다 — **문서를 쓴 쪽이 붙인 라벨**이다.
+// 우리 키워드 표보다 근거로서 격이 높으므로 이쪽을 주 지표로 쓴다.
+//
+// ⚠️ 이것도 「추천이 부족하다」는 뜻이 아니다. 우리 시드 24개가 통장/저축에 쏠려 있다.
+//    아래는 **우리 관측이 FAQ의 어디를 덮었고 어디를 못 덮었나**의 서술이다.
+//    그리고 그것이 곧 「추천 문구를 새로 쓸 자리」의 목록이 된다.
+// ══════════════════════════════════════════════════════════════════════
+const 제목경로 = 'data/faq-titles.json';
+if (!fs.existsSync(제목경로)) {
+  console.log('\n(FAQ 제목 없음 — node tools/faq.mjs 를 먼저 돌린다)');
+  process.exit(0);
+}
+const 제목맵 = JSON.parse(fs.readFileSync(제목경로, 'utf8'));
+
+// 태그 = 카카오뱅크가 제목 앞에 직접 붙인 대괄호 라벨
+const 태그수 = {};
+for (const [cat, list] of Object.entries(제목맵))
+  for (const t of list) {
+    const m = t.match(/^\[([^\]]+)\]/);
+    if (m) (태그수[m[1].trim()] ??= { n: 0, cat })['n']++;
+  }
+
+const 납작 = s => s.replace(/\s+/g, '');
+const 태그목록 = Object.entries(태그수)
+  .map(([태그, v]) => ({ 태그, 문항: v.n, cat: v.cat, flat: 납작(태그) }))
+  .sort((a, b) => b.문항 - a.문항);
+
+// 추천 문구가 그 태그를 건드렸는가 — 공백 제거 후 부분 문자열. 결정적이다.
+const 추천flat = 추천.map(x => 납작(x.문구));
+const 시드flat = [...new Set(추천.map(x => x.회차))];
+for (const t of 태그목록) t.추천 = 추천flat.filter(s => s.includes(t.flat)).length;
+
+const 닿음 = 태그목록.filter(t => t.추천 > 0);
+const 총문항 = 태그목록.reduce((a, t) => a + t.문항, 0);
+const 닿은문항 = 닿음.reduce((a, t) => a + t.문항, 0);
+
+console.log(`\n\n■ FAQ 태그 커버리지 — 카카오뱅크가 붙인 라벨 ${태그목록.length}종`);
+console.log('─'.repeat(66));
+console.log(`  추천 문구가 닿은 태그   ${닿음.length}/${태그목록.length}종  (${(100*닿음.length/태그목록.length).toFixed(0)}%)`);
+console.log(`  그 태그가 덮는 문항     ${닿은문항}/${총문항}개  (${(100*닿은문항/총문항).toFixed(0)}%)`);
+console.log(`  ※ 관측 ${시드flat.length}회차 · 추천 ${총추천}개 기준. 시드는 통장/저축에 쏠려 있다`);
+
+console.log(`\n■ 문서가 많은데 추천이 한 번도 안 간 태그 — 상위 15`);
+console.log(`  (= 추천 질문 콘텐츠를 새로 쓸 자리의 목록)`);
+for (const t of 태그목록.filter(t => t.추천 === 0).slice(0, 15))
+  console.log(`  ${String(t.문항).padStart(4)}건  ${t.태그.padEnd(24)} [${t.cat}]`);
+
+console.log(`\n■ 추천이 실제로 닿은 태그`);
+for (const t of 닿음.sort((a, b) => b.추천 - a.추천))
+  console.log(`  문항 ${String(t.문항).padStart(4)}  ← 추천 ${String(t.추천).padStart(3)}개   ${t.태그}`);
+
+fs.writeFileSync('data/faq-coverage.json', JSON.stringify({
+  주의: ['태그는 카카오뱅크가 FAQ 제목에 직접 붙인 라벨이다. 우리 분류가 아니다.',
+        '「추천이 안 갔다」는 품질 지적이 아니다. 우리 시드 24개가 통장/저축에 쏠려 있다.',
+        '이 표의 용도는 추천 질문 콘텐츠를 새로 쓸 자리를 고르는 것이다.'],
+  태그수: 태그목록.length, 총문항, 닿은태그: 닿음.length, 닿은문항,
+  태그: 태그목록.map(({ flat, ...r }) => r),
+}, null, 1));
+console.log('\n→ data/faq-coverage.json 저장');

@@ -36,3 +36,6 @@ data/scored-round*.json
 
 # 앱 리뷰 원본 — 수집 스크립트와 집계 결과만 공개한다
 data/reviews-raw/
+
+# FAQ 제목 전량 — 카카오뱅크 콘텐츠다. 집계(data/faq.json)만 공개한다
+data/faq-titles.json
