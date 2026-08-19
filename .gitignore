@@ -31,7 +31,8 @@ docs/00-공고원문.md
 # 카카오뱅크 AI 답변 원문 전량(약 5만자). 인용이 아니라 재배포가 된다.
 # 공개본은 룰 히트 주변 발췌만 담은 data/scored-round1.public.json 이다
 data/raw/
-data/scored-round1.json
+data/scored-round*.json
+!data/scored-round*.public.json
 
 # 앱 리뷰 원본 — 수집 스크립트와 집계 결과만 공개한다
 data/reviews-raw/
