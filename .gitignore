@@ -39,3 +39,4 @@ data/reviews-raw/
 
 # FAQ 제목 전량 — 카카오뱅크 콘텐츠다. 집계(data/faq.json)만 공개한다
 data/faq-titles.json
+data/faq-bodies.json
