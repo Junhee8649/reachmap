@@ -30,7 +30,16 @@ docs/00-공고원문.md
 
 # 카카오뱅크 AI 답변 원문 전량(약 5만자). 인용이 아니라 재배포가 된다.
 # 공개본은 룰 히트 주변 발췌만 담은 data/scored-round1.public.json 이다
-data/raw/
+#
+# 다만 시드 하나(S10)는 공개한다 — 채점기를 남이 실제로 돌려볼 수 있어야
+# 「룰이 결정적이다」가 주장이 아니라 확인 가능한 사실이 된다.
+# S10 을 고른 이유: 표 검산으로 오답을 잡은 시드라 예시로 가장 적합하다.
+# git 은 부모 디렉터리가 제외되면 그 안의 예외를 못 살리므로 단계적으로 푼다.
+data/raw/*
+!data/raw/README.md
+!data/raw/round1/
+data/raw/round1/*
+!data/raw/round1/S10.txt
 data/scored-round*.json
 !data/scored-round*.public.json
 
