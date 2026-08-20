@@ -21,7 +21,17 @@ const 제외 = new Set(Object.entries(매니).filter(([, v]) => v && v.룰제외
 const turns = 관측.map(r => ({ body: fs.readFileSync(r.답변원문파일, 'utf8') }));
 const 룰입력 = turns.map((t, i) => (제외.has(관측[i].q_id) ? { ...t, body: '' } : t));
 if (제외.size) console.log('⚠️ 룰 제외 ' + [...제외].join(' ') + ' — 이관 창 전사라 문자열 판정에서 뺀다');
-const 링크 = turns.map(t => [...t.body.matchAll(/https?:\/\/\S+/g)].map(m => m[0]));
+// 링크는 「제목 줄 + URL 줄」로 온다. 회차 데이터와 모양을 맞춘다 —
+// 도구가 두 데이터를 같은 구조로 읽어야 화면이 갈리지 않는다.
+const 링크 = turns.map(t => {
+  const ls = t.body.split(/\r?\n/);
+  return ls.flatMap((l, k) => {
+    const m = l.match(/https?:\/\/\S+/);
+    if (!m) return [];
+    const 앞 = (ls[k - 1] ?? '').trim();
+    return [{ title: /https?:/.test(앞) ? '' : 앞, url: m[0] }];
+  });
+});
 // 추천 문구 — 머리말은 5종이다(👉/🔍 × 문구). 1·2라운드에서 확인된 것을 그대로 쓴다.
 // 🔴 처음엔 「👉」만 찾았다가 G44(🔍 더 자세히 알려드릴게요)를 추천 0개로 셌다.
 //    parse.mjs 의 MARKER 를 그대로 가져와 맞춘다 — 도구마다 다른 규칙을 쓰면 회차 비교가 깨진다.

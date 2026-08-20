@@ -43,7 +43,10 @@
    "마이너스통장대출이랑 신용대출 뭐가 달라?"
   ],
   "링크": [
-   "https://kakaobank.onelink.me/0qMi/wu835bis"
+   {
+    "title": "신용대출 비교하기",
+    "url": "https://kakaobank.onelink.me/0qMi/wu835bis"
+   }
   ],
   "히트": [
    {
@@ -73,7 +76,10 @@
    "비상금대출 금리 범위 다시 알려줘"
   ],
   "링크": [
-   "https://kakaobank.onelink.me/0qMi/mi2pcauq"
+   {
+    "title": "금리 안내",
+    "url": "https://kakaobank.onelink.me/0qMi/mi2pcauq"
+   }
   ],
   "히트": [
    {
@@ -159,7 +165,10 @@
    "내 신용점수 확인은 어디서 해?"
   ],
   "링크": [
-   "https://kakaobank.onelink.me/0qMi/wu835bis"
+   {
+    "title": "신용대출 비교하기",
+    "url": "https://kakaobank.onelink.me/0qMi/wu835bis"
+   }
   ],
   "히트": [],
   "발췌": []
@@ -182,7 +191,10 @@
    "카카오뱅크 주택담보대출이랑 뭐가 달라?"
   ],
   "링크": [
-   "https://kakaobank.onelink.me/0qMi/ukkk99ys"
+   {
+    "title": "아낌e 보금자리론",
+    "url": "https://kakaobank.onelink.me/0qMi/ukkk99ys"
+   }
   ],
   "히트": [
    {
@@ -214,7 +226,10 @@
    "신용대출 비교하기는 조회만 해도 신용점수 떨어져?"
   ],
   "링크": [
-   "https://kakaobank.onelink.me/0qMi/wu835bis"
+   {
+    "title": "신용대출 비교하기",
+    "url": "https://kakaobank.onelink.me/0qMi/wu835bis"
+   }
   ],
   "히트": [
    {
@@ -264,8 +279,14 @@
    "아낌e 보금자리론이 심사 전인지 후인지 어디서 확인해?"
   ],
   "링크": [
-   "https://kakaobank.onelink.me/0qMi/ukkk99ys",
-   "https://kakaobank.onelink.me/0qMi/e1xr8j5n"
+   {
+    "title": "아낌e 보금자리론",
+    "url": "https://kakaobank.onelink.me/0qMi/ukkk99ys"
+   },
+   {
+    "title": "신용대출 갈아타기",
+    "url": "https://kakaobank.onelink.me/0qMi/e1xr8j5n"
+   }
   ],
   "히트": [
    {
@@ -301,7 +322,10 @@
    "전세 보증금 대출이 필요하면 어떤 걸 보면 돼?"
   ],
   "링크": [
-   "https://kakaobank.onelink.me/0qMi/wu835bis"
+   {
+    "title": "신용대출 비교하기",
+    "url": "https://kakaobank.onelink.me/0qMi/wu835bis"
+   }
   ],
   "히트": [],
   "발췌": []
@@ -324,7 +348,10 @@
    "결제한도 말고 이체한도도 올리는 방법 알려줘"
   ],
   "링크": [
-   "https://kakaobank.onelink.me/0qMi/fel9d2zm"
+   {
+    "title": "내 카드",
+    "url": "https://kakaobank.onelink.me/0qMi/fel9d2zm"
+   }
   ],
   "히트": [
    {
@@ -401,9 +428,18 @@
    "주식계좌는 어떤 증권사로 만드는 게 편해?"
   ],
   "링크": [
-   "https://kakaobank.onelink.me/0qMi/bfzycft5",
-   "https://kakaobank.onelink.me/0qMi/67n8eco5",
-   "https://kakaobank.onelink.me/0qMi/opf8i6bj"
+   {
+    "title": "증권사 주식계좌 개설",
+    "url": "https://kakaobank.onelink.me/0qMi/bfzycft5"
+   },
+   {
+    "title": "펀드 찾기",
+    "url": "https://kakaobank.onelink.me/0qMi/67n8eco5"
+   },
+   {
+    "title": "MMF박스",
+    "url": "https://kakaobank.onelink.me/0qMi/opf8i6bj"
+   }
   ],
   "히트": [
    {
@@ -519,7 +555,10 @@
    "대출 조회하면 신용점수에 영향 있어?"
   ],
   "링크": [
-   "https://kakaobank.onelink.me/0qMi/wu835bis"
+   {
+    "title": "신용대출 비교하기",
+    "url": "https://kakaobank.onelink.me/0qMi/wu835bis"
+   }
   ],
   "히트": [
    {
@@ -580,10 +619,22 @@
    "세이프박스 보관한도 1억으로 올리는 방법 알려줘"
   ],
   "링크": [
-   "https://kakaobank.onelink.me/0qMi/un89bzqp",
-   "https://kakaobank.onelink.me/0qMi/hgksofym",
-   "https://kakaobank.onelink.me/0qMi/l2g095sn",
-   "https://kakaobankcontent.com/bank-story/contents/425"
+   {
+    "title": "세이프박스",
+    "url": "https://kakaobank.onelink.me/0qMi/un89bzqp"
+   },
+   {
+    "title": "저금통 개설",
+    "url": "https://kakaobank.onelink.me/0qMi/hgksofym"
+   },
+   {
+    "title": "저금통 조회",
+    "url": "https://kakaobank.onelink.me/0qMi/l2g095sn"
+   },
+   {
+    "title": "만 17세, 저금통과 세이프박스로 재테크 시작해요",
+    "url": "https://kakaobankcontent.com/bank-story/contents/425"
+   }
   ],
   "히트": [
    {
@@ -613,8 +664,14 @@
    "300만 원을 30일 넣으면 각각 이자(수익) 얼마나 돼?"
   ],
   "링크": [
-   "https://kakaobank.onelink.me/0qMi/opf8i6bj",
-   "https://kakaobank.onelink.me/0qMi/un89bzqp"
+   {
+    "title": "MMF박스",
+    "url": "https://kakaobank.onelink.me/0qMi/opf8i6bj"
+   },
+   {
+    "title": "세이프박스",
+    "url": "https://kakaobank.onelink.me/0qMi/un89bzqp"
+   }
   ],
   "히트": [
    {
@@ -650,7 +707,10 @@
    "보증금이랑 월세 입력하면 전세가 나은지 계산해줘"
   ],
   "링크": [
-   "https://kakaobank.onelink.me/0qMi/6cvg6z4q"
+   {
+    "title": "전월세보증금 대출 신청",
+    "url": "https://kakaobank.onelink.me/0qMi/6cvg6z4q"
+   }
   ],
   "히트": [
    {
@@ -690,7 +750,10 @@
    "아낌e 보금자리론도 카뱅에서 할 수 있어?"
   ],
   "링크": [
-   "https://kakaobank.onelink.me/0qMi/5pjcevg0"
+   {
+    "title": "주택담보대출",
+    "url": "https://kakaobank.onelink.me/0qMi/5pjcevg0"
+   }
   ],
   "히트": [
    {
@@ -728,7 +791,10 @@
    "대출을 일부만 미리 갚아도 바로 이자가 줄어?"
   ],
   "링크": [
-   "https://kakaobank.onelink.me/0qMi/29v74eex"
+   {
+    "title": "내 계좌 (대출)",
+    "url": "https://kakaobank.onelink.me/0qMi/29v74eex"
+   }
   ],
   "히트": [],
   "발췌": []
@@ -772,7 +838,10 @@
    "이자납입일에 잔액이 부족하면 어떻게 돼?"
   ],
   "링크": [
-   "https://kakaobank.onelink.me/0qMi/29v74eex"
+   {
+    "title": "내 계좌 (대출)",
+    "url": "https://kakaobank.onelink.me/0qMi/29v74eex"
+   }
   ],
   "히트": [],
   "발췌": []
@@ -795,9 +864,18 @@
    "대출 상환일이랑 이자 납입일을 어디서 확인해?"
   ],
   "링크": [
-   "https://kakaobank.onelink.me/0qMi/mhs4o8eq??",
-   "https://kakaobank.onelink.me/0qMi/506w1jff",
-   "https://kakaobank.onelink.me/0qMi/29v74eex"
+   {
+    "title": "고객센터",
+    "url": "https://kakaobank.onelink.me/0qMi/mhs4o8eq??"
+   },
+   {
+    "title": "채무조정 신청하기",
+    "url": "https://kakaobank.onelink.me/0qMi/506w1jff"
+   },
+   {
+    "title": "내 계좌 (대출)",
+    "url": "https://kakaobank.onelink.me/0qMi/29v74eex"
+   }
   ],
   "히트": [
    {
@@ -851,7 +929,10 @@
    "입출금통장이랑 세이프박스 차이 한 번에 정리해줘"
   ],
   "링크": [
-   "https://kakaobank.onelink.me/0qMi/un89bzqp"
+   {
+    "title": "세이프박스",
+    "url": "https://kakaobank.onelink.me/0qMi/un89bzqp"
+   }
   ],
   "히트": [
    {
@@ -889,8 +970,14 @@
    "저금통에서 돈 빼는 방법 알려줘"
   ],
   "링크": [
-   "https://kakaobank.onelink.me/0qMi/hgksofym",
-   "https://kakaobank.onelink.me/0qMi/l2g095sn"
+   {
+    "title": "저금통 개설",
+    "url": "https://kakaobank.onelink.me/0qMi/hgksofym"
+   },
+   {
+    "title": "저금통 조회",
+    "url": "https://kakaobank.onelink.me/0qMi/l2g095sn"
+   }
   ],
   "히트": [],
   "발췌": []
@@ -913,8 +1000,14 @@
    "나한테는 한달적금이랑 자유적금 중 뭐가 더 잘 맞을까?"
   ],
   "링크": [
-   "https://kakaobank.onelink.me/0qMi/p912y2i4",
-   "https://kakaobank.onelink.me/0qMi/j6khnt93"
+   {
+    "title": "한달적금",
+    "url": "https://kakaobank.onelink.me/0qMi/p912y2i4"
+   },
+   {
+    "title": "자유적금",
+    "url": "https://kakaobank.onelink.me/0qMi/j6khnt93"
+   }
   ],
   "히트": [
    {
@@ -956,8 +1049,14 @@
    "회비규칙을 바꾸려면 어디서 바꿔?"
   ],
   "링크": [
-   "https://kakaobank.onelink.me/0qMi/txif3qjf",
-   "https://kakaobank.onelink.me/0qMi/57wqzfom"
+   {
+    "title": "모임통장 모아보기",
+    "url": "https://kakaobank.onelink.me/0qMi/txif3qjf"
+   },
+   {
+    "title": "모임통장",
+    "url": "https://kakaobank.onelink.me/0qMi/57wqzfom"
+   }
   ],
   "히트": [
    {
@@ -989,7 +1088,10 @@
    "모임통장에 체크카드도 연결할 수 있어?"
   ],
   "링크": [
-   "https://kakaobank.onelink.me/0qMi/57wqzfom"
+   {
+    "title": "모임통장",
+    "url": "https://kakaobank.onelink.me/0qMi/57wqzfom"
+   }
   ],
   "히트": [],
   "발췌": []
@@ -1012,8 +1114,14 @@
    "아이가 14세인데 입출금통장 만들 때 뭐가 필요해?"
   ],
   "링크": [
-   "https://kakaobank.onelink.me/0qMi/indtsmer",
-   "https://kakaobank.onelink.me/0qMi/mwa8frpi"
+   {
+    "title": "우리아이통장 신청",
+    "url": "https://kakaobank.onelink.me/0qMi/indtsmer"
+   },
+   {
+    "title": "우리아이적금 신청",
+    "url": "https://kakaobank.onelink.me/0qMi/mwa8frpi"
+   }
   ],
   "히트": [
    {
@@ -1055,8 +1163,14 @@
    "mini 쓰는 아이면 하루에 얼마까지 쓸 수 있어?"
   ],
   "링크": [
-   "https://kakaobank.onelink.me/0qMi/indtsmer",
-   "https://kakaobank.onelink.me/0qMi/51h97h1f"
+   {
+    "title": "우리아이통장 신청",
+    "url": "https://kakaobank.onelink.me/0qMi/indtsmer"
+   },
+   {
+    "title": "모바일 이체한도조회/변경",
+    "url": "https://kakaobank.onelink.me/0qMi/51h97h1f"
+   }
   ],
   "히트": [
    {
@@ -1088,7 +1202,10 @@
    "적금 긴급출금이랑 중도해지는 차이가 뭐야?"
   ],
   "링크": [
-   "https://kakaobank.onelink.me/0qMi/o5wx8ow0"
+   {
+    "title": "내 계좌 (예적금)",
+    "url": "https://kakaobank.onelink.me/0qMi/o5wx8ow0"
+   }
   ],
   "히트": [
    {
@@ -1142,7 +1259,10 @@
    "달러 세이프박스도 여러 개 만들 수 있어?"
   ],
   "링크": [
-   "https://kakaobank.onelink.me/0qMi/un89bzqp"
+   {
+    "title": "세이프박스",
+    "url": "https://kakaobank.onelink.me/0qMi/un89bzqp"
+   }
   ],
   "히트": [],
   "발췌": []
@@ -1165,7 +1285,10 @@
    "분실신고 해제는 어떻게 해?"
   ],
   "링크": [
-   "https://kakaobank.onelink.me/0qMi/1v0pv1i4"
+   {
+    "title": "분실신고/해제",
+    "url": "https://kakaobank.onelink.me/0qMi/1v0pv1i4"
+   }
   ],
   "히트": [
    {
@@ -1201,8 +1324,14 @@
    "내 카드에서 결제 내역 확인하는 방법 알려줘"
   ],
   "링크": [
-   "https://kakaobank.onelink.me/0qMi/fel9d2zm",
-   "https://kakaobankcontent.com/bank-story/contents/623"
+   {
+    "title": "내 카드",
+    "url": "https://kakaobank.onelink.me/0qMi/fel9d2zm"
+   },
+   {
+    "title": "셀프 주유소 이용할 때 '초과 결제' 조심하세요",
+    "url": "https://kakaobankcontent.com/bank-story/contents/623"
+   }
   ],
   "히트": [
    {
@@ -1238,7 +1367,10 @@
    "해외 결제 캐시백이 늦게 잡히는 이유가 뭐야?"
   ],
   "링크": [
-   "https://kakaobank.onelink.me/0qMi/otx6qtr1"
+   {
+    "title": "프렌즈 체크카드 캐시백",
+    "url": "https://kakaobank.onelink.me/0qMi/otx6qtr1"
+   }
   ],
   "히트": [
    {
@@ -1306,7 +1438,10 @@
    "해외 원화 결제 차단은 어떻게 켜?"
   ],
   "링크": [
-   "https://kakaobank.onelink.me/0qMi/fel9d2zm"
+   {
+    "title": "내 카드",
+    "url": "https://kakaobank.onelink.me/0qMi/fel9d2zm"
+   }
   ],
   "히트": [
    {
@@ -1336,7 +1471,10 @@
    "체크카드 결제한도도 같이 바꾸고 싶어"
   ],
   "링크": [
-   "https://kakaobank.onelink.me/0qMi/fel9d2zm"
+   {
+    "title": "내 카드",
+    "url": "https://kakaobank.onelink.me/0qMi/fel9d2zm"
+   }
   ],
   "히트": [],
   "발췌": []
@@ -1359,7 +1497,10 @@
    "후불교통 말고 교통카드는 어떻게 써?"
   ],
   "링크": [
-   "https://kakaobank.onelink.me/0qMi/d2n4fjrs"
+   {
+    "title": "프렌즈 체크카드 신청하기",
+    "url": "https://kakaobank.onelink.me/0qMi/d2n4fjrs"
+   }
   ],
   "히트": [],
   "발췌": []
@@ -1382,9 +1523,18 @@
    "착붙 신한카드는 실적 구간이 어떻게 나뉘어?"
   ],
   "링크": [
-   "https://kakaobank.onelink.me/0qMi/fel9d2zm",
-   "https://kakaobank.onelink.me/0qMi/rbj9lse5",
-   "https://kakaobank.onelink.me/0qMi/ti4gjnyc"
+   {
+    "title": "내 카드",
+    "url": "https://kakaobank.onelink.me/0qMi/fel9d2zm"
+   },
+   {
+    "title": "프렌즈 캐시백 프로모션",
+    "url": "https://kakaobank.onelink.me/0qMi/rbj9lse5"
+   },
+   {
+    "title": "카카오뱅크 착붙 신한카드",
+    "url": "https://kakaobank.onelink.me/0qMi/ti4gjnyc"
+   }
   ],
   "히트": [
    {
@@ -1414,8 +1564,14 @@
    "내 카드에서 국내결제만 잠그는 방법 알려줘"
   ],
   "링크": [
-   "https://kakaobank.onelink.me/0qMi/1v0pv1i4",
-   "https://kakaobank.onelink.me/0qMi/fel9d2zm"
+   {
+    "title": "분실신고/해제",
+    "url": "https://kakaobank.onelink.me/0qMi/1v0pv1i4"
+   },
+   {
+    "title": "내 카드",
+    "url": "https://kakaobank.onelink.me/0qMi/fel9d2zm"
+   }
   ],
   "히트": [
    {
@@ -1455,7 +1611,10 @@
    "달러 세이프박스는 뭐가 좋아?"
   ],
   "링크": [
-   "https://kakaobank.onelink.me/0qMi/oql23224"
+   {
+    "title": "외화통장",
+    "url": "https://kakaobank.onelink.me/0qMi/oql23224"
+   }
   ],
   "히트": [
    {
@@ -1514,9 +1673,18 @@
    "달러박스 잔액 자동 환불이 어떻게 진행돼?"
   ],
   "링크": [
-   "https://kakaobank.onelink.me/0qMi/kiia3an7",
-   "https://kakaobank.onelink.me/0qMi/oql23224",
-   "https://kakaobank.onelink.me/0qMi/9gyensb0"
+   {
+    "title": "달러박스",
+    "url": "https://kakaobank.onelink.me/0qMi/kiia3an7"
+   },
+   {
+    "title": "외화통장",
+    "url": "https://kakaobank.onelink.me/0qMi/oql23224"
+   },
+   {
+    "title": "달러 세이프박스",
+    "url": "https://kakaobank.onelink.me/0qMi/9gyensb0"
+   }
   ],
   "히트": [
    {
@@ -1552,7 +1720,10 @@
    "100만원 보내면 수수료가 총 얼마야?"
   ],
   "링크": [
-   "https://kakaobank.onelink.me/0qMi/ynmkv2nt"
+   {
+    "title": "해외송금 보내기",
+    "url": "https://kakaobank.onelink.me/0qMi/ynmkv2nt"
+   }
   ],
   "히트": [
    {
@@ -1598,8 +1769,14 @@
    "외화통장 환율우대가 실제로 뭐가 좋은 거야?"
   ],
   "링크": [
-   "https://kakaobank.onelink.me/0qMi/oql23224",
-   "https://kakaobank.onelink.me/0qMi/9gyensb0"
+   {
+    "title": "외화통장",
+    "url": "https://kakaobank.onelink.me/0qMi/oql23224"
+   },
+   {
+    "title": "달러 세이프박스",
+    "url": "https://kakaobank.onelink.me/0qMi/9gyensb0"
+   }
   ],
   "히트": [
    {
@@ -1635,7 +1812,10 @@
    "해외 ATM에서 출금 말고, 해외로 송금하는 방법도 알려줘"
   ],
   "링크": [
-   "https://kakaobank.onelink.me/0qMi/fel9d2zm"
+   {
+    "title": "내 카드",
+    "url": "https://kakaobank.onelink.me/0qMi/fel9d2zm"
+   }
   ],
   "히트": [
    {
@@ -1673,7 +1853,10 @@
    "MMF박스에 300만원을 10일 넣으면 수익이 얼마나 될까?"
   ],
   "링크": [
-   "https://kakaobank.onelink.me/0qMi/opf8i6bj"
+   {
+    "title": "MMF박스",
+    "url": "https://kakaobank.onelink.me/0qMi/opf8i6bj"
+   }
   ],
   "히트": [
    {
@@ -1709,8 +1892,14 @@
    "주식 말고 카카오뱅크에서 할 수 있는 투자 상품은 뭐가 있어?"
   ],
   "링크": [
-   "https://kakaobank.onelink.me/0qMi/bfzycft5",
-   "https://kakaobank.onelink.me/0qMi/l5j2ib4m"
+   {
+    "title": "증권사 주식계좌 개설",
+    "url": "https://kakaobank.onelink.me/0qMi/bfzycft5"
+   },
+   {
+    "title": "국내주식 투자",
+    "url": "https://kakaobank.onelink.me/0qMi/l5j2ib4m"
+   }
   ],
   "히트": [],
   "발췌": []
@@ -1754,8 +1943,14 @@
    "ISA 말고 세금 줄이는 방법에는 뭐가 있어?"
   ],
   "링크": [
-   "https://kakaobank.onelink.me/0qMi/8vq6ac2z",
-   "https://kakaobank.onelink.me/0qMi/ebmqry2f"
+   {
+    "title": "증권사 절세계좌",
+    "url": "https://kakaobank.onelink.me/0qMi/8vq6ac2z"
+   },
+   {
+    "title": "투자탭 발견 홈",
+    "url": "https://kakaobank.onelink.me/0qMi/ebmqry2f"
+   }
   ],
   "히트": [
    {
@@ -1787,7 +1982,10 @@
    "MMF박스는 수익이 언제부터 생겨?"
   ],
   "링크": [
-   "https://kakaobank.onelink.me/0qMi/opf8i6bj"
+   {
+    "title": "MMF박스",
+    "url": "https://kakaobank.onelink.me/0qMi/opf8i6bj"
+   }
   ],
   "히트": [
    {
@@ -1819,9 +2017,18 @@
    "인증서 갱신이 안 될 때 보통 뭐부터 확인해?"
   ],
   "링크": [
-   "https://kakaobank.onelink.me/0qMi/dwvle8et",
-   "https://kakaobank.onelink.me/0qMi/5uzzc869",
-   "https://kakaobank.onelink.me/0qMi/zld9zc7o"
+   {
+    "title": "카카오뱅크 사업자인증서 갱신",
+    "url": "https://kakaobank.onelink.me/0qMi/dwvle8et"
+   },
+   {
+    "title": "카카오뱅크 인증서 갱신",
+    "url": "https://kakaobank.onelink.me/0qMi/5uzzc869"
+   },
+   {
+    "title": "카카오뱅크 인증서 발급/관리",
+    "url": "https://kakaobank.onelink.me/0qMi/zld9zc7o"
+   }
   ],
   "히트": [
    {
@@ -1853,9 +2060,18 @@
    "mini 비밀번호(4자리)도 바꾸고 싶은데 어디서 해?"
   ],
   "링크": [
-   "https://kakaobank.onelink.me/0qMi/wvs9m1kg",
-   "https://kakaobank.onelink.me/0qMi/2j2dn3pg",
-   "https://kakaobank.onelink.me/0qMi/dx5ex1dw"
+   {
+    "title": "인증수단 관리",
+    "url": "https://kakaobank.onelink.me/0qMi/wvs9m1kg"
+   },
+   {
+    "title": "인증 비밀번호 관리",
+    "url": "https://kakaobank.onelink.me/0qMi/2j2dn3pg"
+   },
+   {
+    "title": "인증/보안",
+    "url": "https://kakaobank.onelink.me/0qMi/dx5ex1dw"
+   }
   ],
   "히트": [],
   "발췌": []
