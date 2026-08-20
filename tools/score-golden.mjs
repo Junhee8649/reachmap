@@ -62,3 +62,43 @@ fs.writeFileSync('data/scored-golden.json', JSON.stringify(
   { 문항수: 관측.length, 히트, 링크, 추천,
     문항: 관측.map((r, i) => ({ ...r, 링크: 링크[i], 추천: 추천[i] })) }, null, 1));
 console.log('\n→ data/goldenset-round1.csv 갱신 · data/scored-golden.json 저장');
+
+// ── 공개본 ──────────────────────────────────────────────────────────
+// 카카오뱅크 답변 원문 전량은 싣지 않는다. 룰이 잡은 자리 주변 발췌만 낸다.
+// (round1·round2 공개본과 같은 규칙 — data/README.md)
+const PAD = 70;
+function 발췌들(body, hits) {
+  const 범위 = [];
+  for (const h of hits) {
+    const key = [h.근거, h.금리, h.값, h.총액행].find(k => k && body.includes(k));
+    if (!key) continue;
+    const at = body.indexOf(key);
+    범위.push([Math.max(0, at - PAD), Math.min(body.length, at + key.length + PAD)]);
+  }
+  범위.sort((a, b) => a[0] - b[0]);
+  const 합친 = [];
+  for (const [a, b] of 범위) {
+    const last = 합친[합친.length - 1];
+    if (last && a <= last[1]) last[1] = Math.max(last[1], b);
+    else 합친.push([a, b]);
+  }
+  return 합친.map(([a, b]) =>
+    (a > 0 ? '…' : '') + body.slice(a, b).trim() + (b < body.length ? '…' : ''));
+}
+const 공개 = 관측.map((r, i) => ({
+  q_id: r.q_id, 분류: r.분류, 기대유형: r.기대유형, 질문: r.질문,
+  판정: r.판정, 근거표시: r.근거표시, 한계고지: r.한계고지, 되묻기: r.되묻기, 인계여부: r.인계여부,
+  메모: r.메모, 정답기준: r.정답기준,
+  추천: 추천[i], 링크: 링크[i],
+  히트: Object.entries(히트).flatMap(([이름, hs]) =>
+    hs.filter(h => h.turn === i + 1).map(({ turn, ...x }) => ({ 룰: 이름, ...x }))),
+  // 헤더공백은 결함이 아니라 표기 특성이라(tools/feedback.py) 발췌를 만들지 않는다.
+  // 발췌는 근거를 보이려는 것이고, 결함이 아닌 것의 근거는 보일 필요가 없다.
+  발췌: 발췌들(turns[i].body,
+    Object.entries(히트).filter(([이름]) => 이름 !== '헤더공백')
+      .flatMap(([이름, hs]) => hs.filter(h => h.turn === i + 1).map(h => ({ ...h, 룰: 이름 })))),
+}));
+fs.writeFileSync('data/scored-golden.public.json', JSON.stringify(공개, null, 1));
+const 원 = turns.reduce((a, t) => a + t.body.length, 0);
+const 발 = 공개.reduce((a, x) => a + x.발췌.join('').length, 0);
+console.log(`→ data/scored-golden.public.json 저장 (원문 ${원.toLocaleString()}자 → 발췌 ${발.toLocaleString()}자)`);

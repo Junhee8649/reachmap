@@ -161,3 +161,18 @@ table.heat td.qcell {
   font: 12px/1.6 system-ui, -apple-system, 'Segoe UI', sans-serif;
   margin: 0 0 6px; overflow-x: auto; padding: 8px 10px; white-space: pre-wrap;
 }
+
+/* 골든셋 — 문항 하나가 한 줄, 눌러서 펼친다.
+   기존 토큰과 .tag.j-* 판정색을 그대로 쓴다. 같은 개념에 다른 색을 쓰면 화면이 갈린다 */
+.golden { display: flex; flex-direction: column; }
+.grow { border-bottom: 1px solid var(--border); }
+.ghead {
+  align-items: baseline; background: none; border: 0; color: inherit; cursor: pointer;
+  display: flex; font: inherit; gap: 10px; padding: 9px 4px; text-align: left; width: 100%;
+}
+.ghead:hover { background: var(--plane); }
+.ghead .q { flex: 1; min-width: 0; }
+.ghead .gmeta { color: var(--muted); font-size: 12px; white-space: nowrap; }
+.gbody { font-size: 14px; line-height: 1.65; padding: 2px 4px 14px; }
+.gbody p { margin: 0 0 8px; }
+.gbody .recs, .gbody .links { color: var(--ink-2); font-size: 13px; margin: 8px 0 0 18px; }

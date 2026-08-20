@@ -13,33 +13,39 @@ import {
   재탕합,
   룰히트,
   시드룰수,
+  회차턴,
+  golden,
+  골든판정,
+  골든도달,
 } from './data'
 import type { Seed, Turn } from './data'
 
 const 최대턴 = 5
 
 export default function App() {
-  const [tab, setTab] = useState<'개요' | '시드'>('개요')
+  const [tab, setTab] = useState<'개요' | '추천 경로' | '골든셋'>('개요')
   return (
     <>
       <div className="disclaimer">지원자 개인 분석 · 공개 데이터 기반 · 카카오뱅크와 무관</div>
       <header className="page">
         <h1>
-          reachmap<small>대화형 AI 답변 품질 관측 · 1라운드</small>
+          reachmap<small>대화형 AI 답변 품질 관측</small>
         </h1>
         <p className="lede">
-          카카오뱅크 AI에 시드 질문 22개를 넣고, <b>매 턴 첫 번째 추천만</b> 따라가며 5턴까지 관측했다 (총 {총턴}턴).
-          답변 원문에 결정적 룰 6종을 돌린 결과다. <b>2026년 8월 시점 관측이며 이미 개선됐을 수 있다.</b>
+          카카오뱅크 AI를 두 방식으로 관측했다. <b>추천 경로</b>는 매 턴 <b>첫 번째 추천만</b> 따라가며 5턴까지 간 것으로
+          1라운드 {회차턴(1)}턴 + 2라운드 {회차턴(2)}턴 = {총턴}턴이고, <b>골든셋</b>은 문항마다 대화를 초기화한 1턴짜리
+          독립 관측 {golden.length}문항이다. 답변 원문에 결정적 룰 6종을 돌렸다.
+          <b>2026년 8월 시점 관측이며 이미 개선됐을 수 있다.</b>
         </p>
       </header>
       <nav className="tabs">
-        {(['개요', '시드'] as const).map(t => (
+        {(['개요', '추천 경로', '골든셋'] as const).map(t => (
           <button key={t} aria-selected={tab === t} onClick={() => setTab(t)}>
             {t}
           </button>
         ))}
       </nav>
-      <main>{tab === '개요' ? <개요 /> : <시드 />}</main>
+      <main>{tab === '개요' ? <개요 /> : tab === '추천 경로' ? <시드 /> : <골든셋 />}</main>
     </>
   )
 }
@@ -271,5 +277,97 @@ function 턴카드({ seed, turn, t }: { seed: Seed; turn: number; t: Turn }) {
         )}
       </div>
     </div>
+  )
+}
+
+// ── 골든셋 ──────────────────────────────────────────────────────────
+// 추천 경로와 전제가 다르다. 문항마다 대화를 초기화했으므로 턴 사이 연속성이 없고,
+// 그래서 예시휘발·재탕 같은 「앞 턴 대비」 룰은 여기서 돌리지 않는다.
+function 골든셋() {
+  const [열린것, 열기] = useState<string | null>(null)
+  const 링크있음 = golden.filter(g => g.링크.length).length
+  const 기준일 = golden.filter(g => g.근거표시 === 'O').length
+  return (
+    <>
+      <div className="tiles" style={{ marginBottom: 20 }}>
+        <div className="tile">
+          <div className="v">{golden.length}</div>
+          <div className="k">문항</div>
+          <div className="sub">
+            {Object.entries(골든판정).map(([k, v]) => `${k} ${v}`).join(' · ')}
+          </div>
+        </div>
+        <div className="tile">
+          <div className="v">{Math.round((링크있음 / golden.length) * 100)}%</div>
+          <div className="k">상품·기능으로 도달한 문항</div>
+          <div className="sub">{링크있음}/{golden.length}문항</div>
+        </div>
+        <div className="tile">
+          <div className="v">{기준일}</div>
+          <div className="k">기준일을 밝힌 문항</div>
+          <div className="sub">
+            금리·수수료·환율을 말하면서 언제 기준인지 밝힌 것은 {golden.length}개 중 {기준일}개다
+          </div>
+        </div>
+      </div>
+
+      <section className="card">
+        <h2>어느 영역에서 도달이 끊기는가</h2>
+        <p className="note">
+          분류별로 링크가 붙은 문항 비율이다. <b>인증/보안이 가장 낮다</b> — 답은 맞는데 갈 곳을 안 준다.
+          공고가 말한 「상품 페이지로 연결되는 클릭률」을 올릴 지점이 여기다.
+        </p>
+        <div className="bars">
+          {골든도달.map(([분류, v]) => (
+            <Bar key={분류} label={`${분류} ${v.l}/${v.n}`} value={Math.round((v.l / v.n) * 100)} max={100} />
+          ))}
+        </div>
+      </section>
+
+      <section className="card">
+        <h2>문항 {golden.length}개</h2>
+        <p className="note">
+          누르면 판정 근거와 룰이 잡은 자리가 열린다. <b>정답 기준은 관측 전에 사람이 붙였고</b>,
+          공개 FAQ 본문으로 확인한 것만 확정으로 적었다.
+        </p>
+        <div className="golden">
+          {golden.map(g => (
+            <div key={g.q_id} className="grow">
+              <button className="ghead" onClick={() => 열기(열린것 === g.q_id ? null : g.q_id)}>
+                <span className={`tag j-${g.판정 === '-' ? '거절' : g.판정}`}>
+                  {g.판정 === '-' ? '이관' : g.판정}
+                </span>
+                <span className="q">{g.질문}</span>
+                <span className="gmeta">
+                  {g.분류} · {g.기대유형}
+                  {g.링크.length > 0 && ` · 링크 ${g.링크.length}`}
+                  {g.히트.length > 0 && ` · 룰 ${g.히트.length}`}
+                </span>
+              </button>
+              {열린것 === g.q_id && (
+                <div className="gbody">
+                  <p className="note"><b>정답 기준</b> — {g.정답기준}</p>
+                  <p>{g.메모}</p>
+                  {g.발췌.length > 0 && (
+                    <div className="excerpt">
+                      <div className="cap">룰이 잡은 자리 — 답변 원문 발췌</div>
+                      {g.발췌.map((x, i) => <pre key={i}>{x}</pre>)}
+                    </div>
+                  )}
+                  {g.추천.length > 0 && (
+                    <ol className="recs">{g.추천.map((r, i) => <li key={i}>{r}</li>)}</ol>
+                  )}
+                  {g.링크.length > 0 && (
+                    <ul className="links">
+                      {g.링크.map((l, i) => <li key={i}>{l.title || l.url}</li>)}
+                    </ul>
+                  )}
+                </div>
+              )}
+            </div>
+          ))}
+        </div>
+      </section>
+    </>
   )
 }
