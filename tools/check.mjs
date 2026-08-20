@@ -8,6 +8,7 @@
 //   node tools/check.mjs
 import fs from 'fs';
 import path from 'path';
+import { execSync } from 'child_process';
 import { readCsv } from './lib/csv.mjs';
 
 const 읽기 = p => fs.readFileSync(p, 'utf8');
@@ -99,6 +100,31 @@ else {
     console.log('  🔴 검증 수단도 없고 없다는 표시(⚠️)도 없는 규칙 — 지키는지 확인할 방법이 없다');
     나쁜줄.forEach(({ l, n }) => console.log(`        ${n}: ${l.trim().slice(0, 70)}`));
   } else console.log(`  ✅ 규칙 ${규칙줄.length}줄 — 명령을 가리키거나 검증 없음(⚠️)으로 표시됨`);
+}
+
+// ── 공개 목록이 실제 추적 상태와 맞나 ──────────────────────────────
+// 이 저장소는 공개된다. docs/05가 「공개한다」고 적은 파일이 실제로 안 올라가거나,
+// 「공개 안 한다」고 적은 파일이 올라가 있으면 **약속과 실물이 어긋난 것**이다.
+// .gitignore 는 **이미 추적 중인 파일에 효력이 없어서** 실제로 두 번 새어 나갔다
+// (scored-round2.json · scored-golden.json). 그래서 산문이 아니라 검사로 둔다.
+console.log('\n■ 공개 목록 대조 — docs/05 가 적은 것과 git 이 추적하는 것');
+{
+  const 추적 = new Set(
+    execSync('git -c core.quotePath=false ls-files', { encoding: 'utf8' })
+      .split('\n').filter(Boolean));
+  const [, 공개절, 비공개절] = 읽기('docs/05-공개목록.md')
+    .split(/^## (?:공개한다|공개하지 않는다)$/m);
+  // 표 행(`|`로 시작)만 본다. 산문에서 파일을 언급하는 것은 목록이 아니다 —
+  // 처음엔 절 전체를 훑어서 설명문 속 `.gitignore` 언급까지 목록으로 셌다.
+  const 경로들 = t => [...new Set(t.split('\n').filter(l => l.startsWith('| `'))
+    .flatMap(l => [...l.matchAll(/`([\w./*-]+)`/g)].map(m => m[1])))]
+    .filter(f => /\.\w+$/.test(f) && !f.includes('*'));
+  const 어긋남 = [
+    ...경로들(공개절).filter(f => !추적.has(f)).map(f => `공개한다고 적었는데 안 올라감: ${f}`),
+    ...경로들(비공개절).filter(f => 추적.has(f)).map(f => `공개 안 한다고 적었는데 올라감: ${f}`),
+  ];
+  if (어긋남.length) { 실패++; 어긋남.forEach(m => console.log('  🔴 ' + m)); }
+  else console.log('  ✅ 문서와 실제 추적 목록이 일치');
 }
 
 console.log(`\n${실패 ? `🔴 ${실패}개 항목 실패` : `✅ 통과 (숫자 주장 ${검사}종 대조)`}\n`);
