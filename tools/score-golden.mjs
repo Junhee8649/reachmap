@@ -13,17 +13,28 @@ const 시트 = readCsv(fs.readFileSync('data/goldenset-round1.csv', 'utf8'));
 const 관측 = 시트.filter(r => fs.existsSync(r.답변원문파일));
 console.log(`시트 ${시트.length}문항 / 원문 있는 것 ${관측.length}문항\n`);
 
+// 이관된 문항은 다른 창에서 직접 타이핑한 전사라 원문 충실도가 낮다.
+// 문자열 룰에 넣으면 그 창의 표기가 AI 검색의 결함으로 잡힌다 → 매니페스트로 뺀다.
+const 매니 = fs.existsSync('data/raw/golden/_manifest.json')
+  ? JSON.parse(fs.readFileSync('data/raw/golden/_manifest.json', 'utf8')) : {};
+const 제외 = new Set(Object.entries(매니).filter(([, v]) => v && v.룰제외).map(([k]) => k.replace('.txt', '')));
 const turns = 관측.map(r => ({ body: fs.readFileSync(r.답변원문파일, 'utf8') }));
+const 룰입력 = turns.map((t, i) => (제외.has(관측[i].q_id) ? { ...t, body: '' } : t));
+if (제외.size) console.log('⚠️ 룰 제외 ' + [...제외].join(' ') + ' — 이관 창 전사라 문자열 판정에서 뺀다');
 const 링크 = turns.map(t => [...t.body.matchAll(/https?:\/\/\S+/g)].map(m => m[0]));
-// 추천 문구 — 「👉」 뒤의 번호 목록
+// 추천 문구 — 머리말은 5종이다(👉/🔍 × 문구). 1·2라운드에서 확인된 것을 그대로 쓴다.
+// 🔴 처음엔 「👉」만 찾았다가 G44(🔍 더 자세히 알려드릴게요)를 추천 0개로 셌다.
+//    parse.mjs 의 MARKER 를 그대로 가져와 맞춘다 — 도구마다 다른 규칙을 쓰면 회차 비교가 깨진다.
+const MARKER = /^[^\S\n]*[#*]*\s*[👉🔍][^\n]*(?:드릴게요|물어볼 수 있어요)[^\n]*$/m;
 const 추천 = turns.map(t => {
-  const i = t.body.indexOf('👉');
-  if (i < 0) return [];
-  return [...t.body.slice(i).matchAll(/^\s*\d+\.\s*(.+)$/gm)].map(m => m[1].trim());
+  const m = t.body.match(MARKER);
+  if (!m) return [];
+  const 뒤 = t.body.slice(t.body.indexOf(m[0]) + m[0].length);
+  return [...뒤.matchAll(/^\s*\d+\.\s*(.+)$/gm)].map(x => x[1].trim());
 });
 
 const 히트 = {};
-for (const [이름, fn] of Object.entries(전체)) 히트[이름] = fn(turns, { 독립: true });
+for (const [이름, fn] of Object.entries(전체)) 히트[이름] = fn(룰입력, { 독립: true });
 
 console.log('■ 룰 적중 (독립 문서 모드 — 예시휘발은 끈다)');
 for (const [이름, h] of Object.entries(히트)) {
