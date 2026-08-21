@@ -14,10 +14,16 @@ import { readCsv } from './lib/csv.mjs';
 const 읽기 = p => fs.readFileSync(p, 'utf8');
 const R1 = readCsv(읽기('data/observations-round1.csv')).filter(r => r.판정);
 const R2rows = readCsv(읽기('data/observations-round2.csv'));
+const R2 = R2rows.filter(r => r.판정);
+const GOLD = readCsv(읽기('data/goldenset-round1.csv')).filter(r => r.판정);
 const SEEDS = readCsv(읽기('data/seeds.csv'));
 // 룰 함수만 센다. 집계용 export(전체)는 룰이 아니다
 const 룰수 = (읽기('tools/lib/rules.mjs').match(/^export function /gm) || []).length;
 const 판정수 = v => R1.filter(r => r.판정 === v).length;
+// 🔴 이 표는 오래 1라운드만 봤다. 관측이 204턴으로 늘었는데 검사 기준이 97턴에 머물러 있었고,
+//    README를 204턴 기준으로 고치자 그제서야 빨간 줄이 떴다. 전체 기준을 따로 둔다.
+const 전량 = [...R1, ...R2, ...GOLD];
+const 전량판정 = v => 전량.filter(r => r.판정 === v).length;
 const raw1 = fs.existsSync('data/raw/round1') ? fs.readdirSync('data/raw/round1').filter(f => f.endsWith('.txt')) : null;
 
 const 문서 = ['README.md', 'data/README.md', ...fs.readdirSync('docs').filter(f => f.endsWith('.md')).map(f => `docs/${f}`)]
@@ -31,7 +37,10 @@ const 주장 = [
   // 파일 표에 적힌 seeds.csv 행수만 본다
   ['seeds.csv 행수', /\| 시드 질문 (\d+)개 \|/g, SEEDS.length],
   ['룰 종류 수', /룰 (\d+)종/g, 룰수],
-  ['판정 정답', /정답 (\d+) ?· ?부분/g, 판정수('정답')],
+  ['1라운드 판정 정답', /1라운드[^\n]*정답 (\d+) ?· ?부분/g, 판정수('정답')],
+  ['전량 총 턴수', /질문 (\d+)개를 넣어봤습니다|질문 \*\*(\d+)개\*\*를|채점 대상은 \*\*(\d+)턴\*\*|합계 (\d+)개/g, 전량.length],
+  // 캡처는 하나만 둔다 — 실행기가 「처음 정의된 캡처」를 값으로 쓰므로 턴수까지 잡으면 엉뚱한 값이 온다
+  ['전량 판정 정답', /\d+턴 중 정답 (\d+) ?· ?부분/g, 전량판정('정답')],
   ['도달한 턴', /도달한 턴 \*\*(\d+)%\*\*|앱기능_진입 = O` ?인 턴은 (\d+)개/g, R1.filter(r => r.앱기능_진입 === 'O').length],
   ['2라운드 행수', /(\d+)행 \/ 19컬럼|기록지 (\d+)행/g, R2rows.length],
   ['2라운드 컬럼수', /(\d+)컬럼이다|총 (\d+)컬럼/g, Object.keys(R2rows[0]).length],
@@ -59,6 +68,77 @@ for (const [이름, re, 참값] of 주장) {
   } else {
     console.log(`  ✅ ${이름} — ${참값} · 문서 ${발견.length}곳 일치`);
   }
+}
+
+// ── 코드에 들어간 기술이 결정기록에 있나 ──────────────────────────────
+// 🔴 왜 있나: `gemini-embedding-001` 이 **코드에만 있고 결정기록에 없는 채로** 며칠 있었다.
+//    CLAUDE.md 작업규칙 1(승인 후 채택)을 어긴 것인데, 산문 규칙으로는 안 잡혔다.
+//    잡히는 것은 셋뿐이다 — 외부 URL · 모델 이름 · npm 의존성.
+//    ⚠️ **이 검사는 「몰래 들어온 기술」만 잡는다.** 설계 판단이나 데이터 처리 방식은 못 잡는다.
+//    그것까지 막아준다고 생각하면 오히려 위험하다.
+console.log('\n■ 코드에 있는데 결정기록에 없나 — 외부 URL · 모델명 · 의존성');
+{
+  const 결정문 = 읽기('docs/02-결정기록.md');
+  const 코드 = ['tools', 'src'].flatMap(d =>
+    fs.readdirSync(d, { recursive: true })
+      .filter(f => /\.(mjs|ts|tsx|py)$/.test(f))
+      .map(f => `${d}/${f}`.replace(/\\/g, '/')))
+    // 이 파일 자신은 뺀다 — 아래 정규식에 `gpt`·`claude` 가 문자열로 들어 있어 자기를 잡는다
+    .filter(f => f !== 'tools/check.mjs');
+
+  const 발견 = new Map();   // 항목 → 어디서 나왔나
+  const 담기 = (k, 곳) => { if (!발견.has(k)) 발견.set(k, 곳); };
+
+  for (const f of 코드) {
+    const t = 읽기(f);
+    // 외부 호스트 — 우리 저장소 밖으로 나가는 곳
+    for (const m of t.matchAll(/https?:\/\/([a-z0-9.-]+)/gi)) 담기(m[1], f);
+    // 모델 이름 — `gemini-embedding-001` `gpt-4o` `claude-...` 꼴
+    for (const m of t.matchAll(/["'`]((?:gemini|gpt|claude|text-embedding|llama|mistral)[a-z0-9.-]*)["'`]/gi))
+      담기(m[1].toLowerCase(), f);
+  }
+  const pkg = JSON.parse(읽기('package.json'));
+  for (const d of Object.keys({ ...pkg.dependencies, ...pkg.devDependencies }))
+    // `@types/react` 는 `react` 의 타입 선언일 뿐 별도 선택이 아니다. 본체 이름으로 본다
+    담기(d.replace(/^@types\//, ''), 'package.json');
+
+  // 결정기록이 그 이름을 어디서든 언급하면 「선언됐다」로 본다.
+  // 느슨하게 잡는다 — 목적은 고발이 아니라 **빠진 것을 눈에 띄게 하는 것**이다.
+  const 미선언 = [...발견].filter(([k]) => !결정문.toLowerCase().includes(k.toLowerCase()));
+  if (미선언.length) {
+    실패++;
+    console.log('  🔴 결정기록(docs/02)에 없다 — 승인 없이 들어왔거나, 들어왔는데 안 적었다');
+    for (const [k, 곳] of 미선언) console.log(`        ${k.padEnd(38)} ${곳}`);
+  } else {
+    console.log(`  ✅ ${발견.size}개 전부 결정기록에 있음`);
+  }
+}
+
+// ── 시드 정의와 실제로 보낸 질문이 같나 ────────────────────────────────
+// 🔴 S24 가 어긋나 있었다 — seeds.csv 는 「모임통장에 친구 초대장 보내줘」인데
+//    실제 1턴 입력은 「스미싱 문자인지 확인해줘」였다. 관측 중에 시드를 바꾸고
+//    정의 파일을 안 고친 것으로 보이는데, 둘 다 공개되므로 읽는 사람이 어긋남을 보게 된다.
+//    원문은 손대지 않는다(작업규칙 4). 어긋났다는 사실을 검사로 드러낸다.
+console.log('\n■ 시드 정의 ↔ 실제 1턴 입력');
+{
+  // 이미 확인하고 사유를 적어 둔 어긋남. **새 어긋남만 실패로 잡는다** —
+  // 아는 것까지 매번 빨갛게 두면 검사가 소음이 되고, 그러면 아무도 안 본다(docs/06).
+  // 🔴 여기 넣는 것은 「고쳤다」가 아니라 「알고 있고 어딘가에 적었다」는 뜻이다.
+  const 알려진어긋남 = {
+    'S19/round2': '관측 때 「지금」을 빠뜨리고 보냈다. 원문은 그대로 두고 seeds.csv 비고에 적었다',
+  };
+  const 정의 = Object.fromEntries(SEEDS.map(s => [s.seed_id, s.question]));
+  const 새것 = [], 아는것 = [];
+  for (const [csv, rows] of [['round1', R1], ['round2', R2]])
+    for (const r of rows.filter(r => r.turn === '1')) {
+      if (!정의[r.seed_id] || 정의[r.seed_id] === r.입력질문) continue;
+      const 키 = `${r.seed_id}/${csv}`;
+      const 줄 = `${키}\n        seeds.csv  "${정의[r.seed_id]}"\n        실제 입력   "${r.입력질문}"`;
+      (알려진어긋남[키] ? 아는것 : 새것).push(알려진어긋남[키] ? `${키} — ${알려진어긋남[키]}` : 줄);
+    }
+  아는것.forEach(m => console.log('  ·  ' + m));
+  if (새것.length) { 실패++; 새것.forEach(m => console.log('  🔴 ' + m)); }
+  else console.log(`  ✅ 시드 ${SEEDS.length}개 — 새로 어긋난 것 없음`);
 }
 
 console.log('\n■ 문서가 가리키는 경로가 실재하나');

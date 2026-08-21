@@ -53,3 +53,7 @@ data/faq-bodies.json
 # 골든셋 관측 원문 — 카카오뱅크 답변이라 커밋하지 않는다
 data/raw/golden/
 data/scored-golden.json
+
+# 지원 서류 — 산출물이 아니라 개인 문서다. 급여·연락처·초안이 들어간다
+지원서/
+*이력서*.html

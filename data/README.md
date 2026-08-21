@@ -10,17 +10,35 @@
 
 ## 파일
 
+관측은 **204턴**이다 — 추천 경로 144턴(1라운드 97 + 2라운드 47) + 골든셋 60문항.
+선제안 3건은 대화를 이어간 것이 아니라 별도로 둔다.
+
+### 사람이 쓴 것
+
 | 파일 | 무엇인가 | 만든 방법 |
 |---|---|---|
 | `seeds.csv` | 시드 질문 24개 | 사람이 작성. 상품명은 앱에서 실재 확인 |
-| `goldenset.csv` | 골든셋 60문항 | 사람이 작성 |
-| `observations-round1.csv` | **1라운드 관측 기록 97턴** | 사람이 관측, Claude가 요약·판정 (아래 「누가 무엇을 썼나」) |
-| `observations-round2.csv` | **2라운드 관측 기록** (진행 중) | 같음 |
+| `goldenset.csv` | 골든셋 60문항과 정답 기준 | 사람이 작성 (D-03) |
+| `observations-round1.csv` | **1라운드 관측 기록 97턴** (13컬럼) | 사람이 관측, Claude가 요약·판정 (아래 「누가 무엇을 썼나」) |
+| `observations-round2.csv` | **2라운드 관측 기록 47턴** (19컬럼) | 같음 |
+| `goldenset-round1.csv` | **골든셋 관측·판정 60문항** | 같음 |
 | `observations-template.csv` | 1라운드 양식 원본 | — |
-| `scored-round1.public.json` | 1라운드 채점 결과 **공개본** | `tools/score.mjs`가 생성 |
+| `rag/queries.csv` | RAG 실험 질의 21개와 **사람이 붙인 정답 라벨** | 재작성 **전에** 고정했다 |
+| `rag/docs-v2/` | 다시 쓴 문서 10건 + `_원칙.md` | 사실은 그대로 두고 표현만 바꿨다 |
 
-**여기 없는 것**: 카카오뱅크 AI 답변 **원문 전량**(`data/raw/`)과 그것이 통째로 든
-`scored-round1.json`. 인용이 아니라 재배포가 되기 때문이다.
+### 도구가 만든 것
+
+| 파일 | 무엇인가 | 만든 것 |
+|---|---|---|
+| `scored-round1.public.json` · `scored-round2.public.json` · `scored-golden.public.json` | 채점 결과 **공개본** — 요약·발췌·추천·링크·판정 | `tools/score.mjs` · `tools/score-golden.mjs` |
+| `coverage.json` · `faq-coverage.json` · `faq.json` | 커버리지 대조 집계 | `tools/coverage.mjs` · `tools/faq.mjs` |
+| `feedback-map.json` | 앱 피드백 UI 분류로 재집계 | `tools/feedback.py` |
+| `rag/result-v1.json` · `rag/result-v2.json` | RAG 실험 결과 | `tools/rag.mjs` |
+| `rag/embed-cache.json` | 임베딩 캐시 2MB | API 키 없이도 실험이 재현되도록 함께 올린다. 벡터이지 본문이 아니다 |
+
+**여기 없는 것**: 카카오뱅크 AI 답변 **원문**(`data/raw/`)과 그것이 통째로 든
+`scored-*.json` 전문판. 인용이 아니라 재배포가 되기 때문이다.
+**대화 하나(`raw/round1/S10.txt`)만 예외로 올렸다** — 그래야 남이 채점기를 돌려볼 수 있다.
 판단 근거와 그 대가는 [`../docs/05-공개목록.md`](../docs/05-공개목록.md)에 적었다.
 
 ---
