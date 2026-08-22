@@ -57,7 +57,7 @@ export default function App() {
           reachmap<small>대화형 AI 답변 품질 관측</small>
         </h1>
         <p className="lede">
-          카카오뱅크 AI에 <b>질문 {총턴 + golden.length}개</b>를 넣고, 답변 원문을 결정적 룰로 채점했다.
+          카카오뱅크 AI에 <b>질문 {총턴 + golden.length}개</b>를 넣고, 답변 원문을 결정적 룰로 채점했다.{' '}
           <b>2026년 8월 시점 관측이며 이미 개선됐을 수 있다.</b>
         </p>
         <p className="lede sub">
@@ -301,7 +301,7 @@ function 시드() {
       <section className="card">
         <h2>턴별 딥링크 개수</h2>
         <p className="note">
-          가로가 시드, 세로가 턴이다. 숫자는 그 턴에 붙은 상품·기능 링크 수이고 점은 대화가 일찍 끝났다는 뜻이다.
+          가로가 시드, 세로가 턴이다. 숫자는 그 턴에 붙은 상품·기능 링크 수이고 점은 대화가 일찍 끝났다는 뜻이다.{' '}
           <b>누르면 아래에서 그 시드가 열린다.</b>
           <br />
           이 격자가 세는 것은 {딥링크턴}턴이고 위 도달률은 {도달턴}턴이다 — 차이 {딥링크없는진입.length}건은
