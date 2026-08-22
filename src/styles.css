@@ -210,3 +210,12 @@ table.heat td.qcell {
 /* 한 카드 안의 보조 막대 — 위 막대의 세부 내역 */
 .bars.sub { margin-left: 14px; border-left: 2px solid var(--grid); padding-left: 14px }
 .big { font-size: 26px; font-weight: 700; margin: 6px 0 2px }
+
+/* 딥링크 격자 — 가로가 시드, 세로가 턴. 질문 칸은 아래 시드 목록이 맡는다 */
+.heat.grid td, .heat.grid th.col { width: 30px; min-width: 30px; padding: 0 }
+.heat.grid th.col button {
+  border: 0; background: none; padding: 3px 0; width: 100%; cursor: pointer;
+  font: inherit; font-size: 10px; color: var(--ink-2);
+}
+.heat.grid th.col button:hover { color: var(--series); text-decoration: underline }
+.heat.grid th.row { width: 34px; min-width: 34px; text-align: right; padding-right: 6px }

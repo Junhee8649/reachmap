@@ -234,30 +234,27 @@ function 시드() {
           ))}
         </div>
         <p className="note" style={{ marginTop: 8 }}>
-          칸으로는 {피드백.칸.map(c => `${c.칸} ${c.건수}건`).join(' · ')}으로 갈린다.
-          <b> ③번은 0건이다</b> — 룰이 「질문과 다른 답」을 보는 눈을 아직 갖고 있지 않다.
+          {피드백.칸.map(c => `${c.칸} ${c.건수}건`).join(' · ')}. <b>③번은 0건</b> — 룰에 그 눈이 없다.
         </p>
         <p className="note" style={{ marginTop: 14 }}>
-          <b>요점은 가운데 줄이다.</b> 글자까지 똑같은 추천이 다시 나오는 것은 사용자가 <b>본다.</b>
-          그런데 칸 셋이 전부 「답변」에 대한 것이라 <b>추천을 신고할 데가 없다</b> — 불만이 있어도 집계에 안 잡힌다.
-          맨 아래 줄(마크다운 헤더 공백)은 앱에서 정상 렌더돼 <b>사용자가 볼 수 없다.</b> 그래서 결함으로 세지 않는다.
+          <b>요점은 가운데 줄이다.</b> 똑같은 추천이 또 뜨는 것은 사용자가 <b>보는데</b>, 칸 셋이 전부
+          「답변」에 대한 것이라 <b>신고할 데가 없다</b> — 불만이 있어도 집계에 안 잡힌다.
+          맨 아래 줄(헤더 공백)은 앱에서 정상 렌더돼 안 보인다. 그래서 결함으로 세지 않는다.
         </p>
         <p className="note">
-          ⚠️ 여기서 세는 것은 <b>「사용자가 신고했다면 어느 칸이었을까」</b>이지 실제 신고가 아니다.
-          룰 → 칸 매핑은 집계를 보기 <b>전에</b> 고정했다 (<code>tools/feedback.py</code>).
+          ⚠️ <b>실제 신고가 아니라 「신고했다면 어느 칸이었을까」</b>다. 매핑은 집계를 보기 <b>전에</b> 고정했다.
         </p>
       </section>
 
       <section className="card">
         <h2>추천이 닿지 않은 자리</h2>
         <p className="note">
-          카카오뱅크가 <b>FAQ 제목에 직접 붙인 태그</b> {커버리지.태그수}개와, 관측에서 실제로 뜬 추천 문구를 대조했다.
-          추천이 한 번이라도 닿은 태그는 <b>{커버리지.닿은태그}개</b>({커버리지.닿은문항.toLocaleString()}
-          /{커버리지.총문항.toLocaleString()}문항)다.
+          카카오뱅크가 <b>FAQ 제목에 붙인 태그</b> {커버리지.태그수}개 중, 추천이 한 번이라도 닿은 것은
+          <b>{커버리지.닿은태그}개</b>({커버리지.닿은문항.toLocaleString()}/{커버리지.총문항.toLocaleString()}문항)다.
         </p>
         <p className="note">
-          🔴 <b>이건 카카오뱅크의 결함이 아니다.</b> 우리 시드 24개가 통장/저축에 쏠려 있어서 생긴 값이기도 하다.
-          이 표의 용도는 지적이 아니라 <b>추천 질문 콘텐츠를 새로 쓸 자리를 고르는 것</b>이다.
+          🔴 <b>카카오뱅크의 결함이 아니다.</b> 우리 시드 24개가 통장/저축에 쏠린 탓이기도 하다.
+          이 표는 지적이 아니라 <b>추천 질문을 새로 쓸 자리 목록</b>이다.
         </p>
         <div className="two">
           <div>
@@ -290,67 +287,58 @@ function 시드() {
           </div>
         </div>
         <p className="note" style={{ marginTop: 12 }}>
-          문항 수는 <b>문서가 얼마나 쌓여 있는지</b>지 고객이 얼마나 묻는지가 아니다. 다만 문서가 100건 넘게 있는데
-          추천이 한 번도 그리로 가지 않았다면, <b>이미 있는 문서를 안 쓰고 있다</b>는 뜻은 된다.
+          문항 수는 <b>문서가 쌓인 양</b>이지 고객이 묻는 양이 아니다. 다만 100건 넘게 있는데 추천이 한 번도
+          안 갔다면 <b>있는 문서를 안 쓰고 있다</b>는 뜻은 된다.
         </p>
         <p className="note">
-          <b>기능도 마찬가지다.</b> 그 일을 대신해 줄 앱 기능이 있는데 답변이 <b>있다고 알려준 턴은
-          {안내.O + 안내.X}턴 중 {안내.O}턴</b>이다. 새 창으로 넘겨준 턴은 {인계.length}건 있었다
+          <b>기능도 마찬가지다.</b> 그 일을 대신해 줄 앱 기능이 있는데 <b>있다고 알려준 턴은
+          {안내.O + 안내.X}턴 중 {안내.O}턴</b>, 새 창으로 넘겨준 턴은 {인계.length}건이다
           ({인계.join(' · ')}). <b>넘겨주는 것과 알려주는 것은 다른 일</b>이고, 알려주는 쪽이
-          추천 질문 콘텐츠로 할 수 있는 일이다.
+          추천 질문으로 할 수 있는 일이다.
         </p>
       </section>
 
       <section className="card">
         <h2>턴별 딥링크 개수</h2>
         <p className="note">
-          한 칸이 한 턴이고 숫자는 그 턴에 붙은 상품·기능 링크 수다. 점은 그 시드가 일찍 끝났다는 뜻이다.
+          가로가 시드, 세로가 턴이다. 숫자는 그 턴에 붙은 상품·기능 링크 수이고 점은 대화가 일찍 끝났다는 뜻이다.
+          <b>누르면 아래에서 그 시드가 열린다.</b>
           <br />
-          <b>이 격자가 세는 것은 {딥링크턴}턴이고 위 도달률은 {도달턴}턴이다.</b> 차이 {딥링크없는진입.length}건은 딥링크
-          카드 없이 도달한 경우다 — {딥링크없는진입.join(' · ')}. 룰은 원문에 카드가 있어야만 세므로 이 셋을 못 잡는다.
+          이 격자가 세는 것은 {딥링크턴}턴이고 위 도달률은 {도달턴}턴이다 — 차이 {딥링크없는진입.length}건은
+          링크 카드 없이 도달한 경우라 원문만 보는 룰이 못 잡는다.
         </p>
         <div style={{ overflowX: 'auto' }}>
-          <table className="heat">
+          <table className="heat grid">
             <thead>
               <tr>
                 <th />
-                {Array.from({ length: 최대턴 }, (_, i) => (
-                  <th key={i}>{i + 1}턴</th>
+                {ids.map(id => (
+                  <th key={id} className="col">
+                    <button onClick={() => setSel(id)} title={seeds[id].질문}>{id}</button>
+                  </th>
                 ))}
-                <th style={{ paddingLeft: 8, textAlign: 'left' }}>시드 질문</th>
               </tr>
             </thead>
             <tbody>
-              {ids.map(id => {
-                const s = seeds[id]
-                return (
-                  <tr key={id}>
-                    <th className="row">{id}</th>
-                    {Array.from({ length: 최대턴 }, (_, i) => {
-                      const n = s.딥링크[i]
-                      if (n === undefined)
-                        return (
-                          <td key={i} className="empty" title={`${id} ${i + 1}턴 — 관측 없음 (체인 종료)`}>
-                            ·
-                          </td>
-                        )
-                      return (
-                        <td
-                          key={i}
-                          title={`${id} ${i + 1}턴 — 딥링크 ${n}개`}
-                          style={{
-                            background: `var(--h${Math.min(n, 3)})`,
-                            color: `var(--ht${Math.min(n, 3)})`,
-                          }}
-                        >
-                          {n}
-                        </td>
-                      )
-                    })}
-                    <td className="qcell">{s.질문}</td>
-                  </tr>
-                )
-              })}
+              {Array.from({ length: 최대턴 }, (_, i) => (
+                <tr key={i}>
+                  <th className="row">{i + 1}턴</th>
+                  {ids.map(id => {
+                    const n = seeds[id].딥링크[i]
+                    if (n === undefined)
+                      return <td key={id} className="empty" title={`${id} ${i + 1}턴 — 관측 없음`}>·</td>
+                    return (
+                      <td
+                        key={id}
+                        title={`${id} ${i + 1}턴 — 딥링크 ${n}개 · ${seeds[id].질문}`}
+                        style={{ background: `var(--h${Math.min(n, 3)})`, color: `var(--ht${Math.min(n, 3)})` }}
+                      >
+                        {n}
+                      </td>
+                    )
+                  })}
+                </tr>
+              ))}
             </tbody>
           </table>
         </div>
@@ -362,6 +350,7 @@ function 시드() {
           3개 이상
         </div>
       </section>
+
     <div className="split">
       <ul className="seedlist card" style={{ padding: 8 }}>
         {ids.map(id => (
