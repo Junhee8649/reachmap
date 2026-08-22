@@ -177,18 +177,24 @@ table.heat td.qcell {
 .gbody p { margin: 0 0 8px; }
 .gbody .recs, .gbody .links { color: var(--ink-2); font-size: 13px; margin: 8px 0 0 18px; }
 
-/* 공고 담당업무 → 화면 매핑 */
-.jobmap { list-style: none; margin: 12px 0 0; padding: 0; display: grid; gap: 6px }
-.jobmap li { display: grid; grid-template-columns: 1fr auto; gap: 12px; align-items: center }
-.jobmap .jd { font-size: 13px; line-height: 1.5 }
-.jobmap button {
-  display: flex; flex-direction: column; align-items: flex-end; gap: 2px;
-  border: 1px solid var(--border); border-radius: 6px; background: var(--plane);
-  padding: 5px 10px; cursor: pointer; font: inherit; font-size: 12px; font-weight: 600;
-  color: var(--ink); white-space: nowrap;
+/* 공고 담당업무 → 화면 매핑 — 첫 화면이라 자리를 적게 먹어야 한다 */
+.jobmap { list-style: none; margin: 10px 0 0; padding: 0 }
+.jobmap li {
+  display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 10px;
+  align-items: baseline; padding: 4px 0; border-top: 1px solid var(--grid);
 }
-.jobmap button:hover { border-color: var(--axis) }
-.jobmap .sec { font-weight: 400; font-size: 11px; color: var(--muted) }
+.jobmap li:first-child { border-top: 0 }
+.jobmap .jd { font-size: 13px }
+.jobmap button {
+  border: 0; background: none; padding: 0; cursor: pointer; font: inherit;
+  font-size: 12px; font-weight: 600; color: var(--series); white-space: nowrap;
+}
+.jobmap button:hover { text-decoration: underline }
+.jobmap .sec { font-weight: 400; color: var(--muted) }
+@media (max-width: 640px) {
+  .jobmap li { grid-template-columns: 1fr; gap: 2px }
+  .jobmap button { text-align: left }
+}
 
 /* 머리말 바깥 링크 */
 .links.out { margin-top: 10px; display: flex; gap: 14px; flex-wrap: wrap }

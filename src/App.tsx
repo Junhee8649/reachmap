@@ -82,24 +82,7 @@ function 개요({ go }: { go: (t: Tab) => void }) {
   const 결함최대 = Math.max(...결함룰.map(r => 룰합[r]))
   return (
     <>
-      <section className="card">
-        <h2>공고의 담당업무를 어디서 다뤘나</h2>
-        <p className="note">
-          왼쪽은 채용공고 「담당할 업무」 다섯 줄 <b>원문 그대로</b>다. 누르면 그 화면으로 간다.
-        </p>
-        <ul className="jobmap">
-          {담당업무.map(m => (
-            <li key={m.업무}>
-              <span className="jd">{m.업무}</span>
-              <button onClick={() => go(m.탭)}>
-                {m.탭}<span className="sec">{m.절}</span>
-              </button>
-            </li>
-          ))}
-        </ul>
-      </section>
-
-      <div className="tiles" style={{ marginBottom: 20 }}>
+      <div className="tiles" style={{ marginBottom: 14 }}>
         <div className="tile">
           <div className="v">{Math.round((판정합.정답 / 총턴) * 100)}%</div>
           <div className="k">내용이 맞은 턴</div>
@@ -127,6 +110,21 @@ function 개요({ go }: { go: (t: Tab) => void }) {
           </div>
         </div>
       </div>
+
+      <section className="card">
+        <h2>공고의 담당업무를 어디서 다뤘나</h2>
+        <p className="note">채용공고 「담당할 업무」 다섯 줄 <b>원문 그대로</b>다. 누르면 그 화면으로 간다.</p>
+        <ul className="jobmap">
+          {담당업무.map(m => (
+            <li key={m.업무}>
+              <span className="jd">{m.업무}</span>
+              <button onClick={() => go(m.탭)}>
+                {m.탭} <span className="sec">{m.절}</span>
+              </button>
+            </li>
+          ))}
+        </ul>
+      </section>
 
       <section className="card">
         <h2>룰이 잡은 {피드백.층.reduce((a, x) => a + x.건수, 0)}건 — 사용자는 그중 무엇을 보나</h2>
@@ -508,7 +506,7 @@ function 골든셋() {
   const 기준일 = golden.filter(g => g.근거표시 === 'O').length
   return (
     <>
-      <div className="tiles" style={{ marginBottom: 20 }}>
+      <div className="tiles" style={{ marginBottom: 14 }}>
         <div className="tile">
           <div className="v">{golden.length}</div>
           <div className="k">문항</div>
