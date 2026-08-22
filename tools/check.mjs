@@ -38,6 +38,10 @@ const 링크문항 = GOLD.filter(r => Number(r.딥링크_개수 || 0) > 0).lengt
 
 const raw1 = fs.existsSync('data/raw/round1') ? fs.readdirSync('data/raw/round1').filter(f => f.endsWith('.txt')) : null;
 
+const 옵션 = f => (fs.existsSync(f) ? JSON.parse(읽기(f)) : null);
+const FB = 옵션('data/feedback-map.json');
+const CV = 옵션('data/faq-coverage.json');
+
 const 문서 = ['README.md', 'data/README.md', ...fs.readdirSync('docs').filter(f => f.endsWith('.md')).map(f => `docs/${f}`)]
   .filter(p => fs.existsSync(p));
 
@@ -61,6 +65,13 @@ const 주장 = [
   ['도달 문항 (원문 기준)', /링크가 붙은 문항 +(\d+) ?\/ ?60/g, 링크문항],
   ['도달 합계', / \((\d+)턴\) \|/g, 링크턴 + 링크문항],
   ['링크 없이 끝난 턴', /204개 중 \*\*(\d+)개\*\*가 상품 바로가기 없이/g, 204 - 링크턴 - 링크문항],
+  // 🔴 2026-08-22 — 리포트에 「피드백 3층」과 「추천이 닿지 않은 자리」 절을 새로 넣으면서,
+  //    그 숫자들이 손으로 적혀 있었다. 도구가 다시 돌면 문서만 낡는다. 대조 대상에 넣는다.
+  ['피드백 A층 건수', /\*\*A 신고 가능\*\* \| [^|]+\| (\d+) \|/g, FB ? FB.요약.A_신고가능 : null],
+  ['피드백 B층 건수', /\*\*B 칸이 없다\*\* \| [^|]+\| (\d+) \|/g, FB ? FB.요약.B_칸없음 : null],
+  ['피드백 C층 건수', /\*\*C 안 보인다\*\* \| [^|]+\| (\d+) \|/g, FB ? FB.요약.C_안보임 : null],
+  ['FAQ 태그 수', /직접 붙인 태그\*\* (\d+)개/g, CV ? CV.태그수 : null],
+  ['추천이 닿은 태그', /닿은 태그는 \*\*(\d+)개\*\*/g, CV ? CV.닿은태그 : null],
   ['2라운드 행수', /(\d+)행 \/ 19컬럼|기록지 (\d+)행/g, R2rows.length],
   ['2라운드 컬럼수', /(\d+)컬럼이다|총 (\d+)컬럼/g, Object.keys(R2rows[0]).length],
   ['1라운드 원문 파일 수', /\((\d+)파일/g, raw1 ? raw1.length : null],

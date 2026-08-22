@@ -131,3 +131,15 @@ export const 재현 = summary.재현 as {
 }[]
 export const 안내 = summary.안내 as { O: number; X: number; 해당없음: number }
 export const 인계 = summary.인계 as string[]
+/** 앱 피드백 UI(싫어요 → 3칸)의 분류로 관측을 재집계한 것 — tools/feedback.py, D-13 */
+export const 피드백 = summary.피드백 as {
+  턴수: number
+  층: { 층: string; 건수: number; 턴수: number }[]
+  칸: { 칸: string; 건수: number }[]
+}
+/** 카카오뱅크가 FAQ 제목에 붙인 태그 대비, 추천 질문이 닿은 범위 — tools/faq.mjs */
+export const 커버리지 = summary.커버리지 as {
+  태그수: number; 닿은태그: number; 총문항: number; 닿은문항: number
+  공백: { 태그: string; 문항: number; 분류: string }[]
+  닿음: { 태그: string; 문항: number; 추천: number; 분류: string }[]
+}

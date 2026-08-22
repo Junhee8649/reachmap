@@ -15,6 +15,8 @@ import {
   재현,
   안내,
   인계,
+  피드백,
+  커버리지,
   재탕합,
   룰히트,
   시드룰수,
@@ -26,9 +28,20 @@ import {
 import type { Seed, Turn } from './data'
 
 const 최대턴 = 5
+type Tab = '개요' | '추천 경로' | 'RAG 문서' | '골든셋'
+
+// 공고 「담당할 업무」 5줄을 그대로 옮기고, 각각을 어느 화면이 다루는지 붙인다.
+// 순서·문구는 docs/00-공고원문.md 원문 그대로다. 우리 편의로 고쳐 쓰면 대조가 안 된다.
+const 담당업무: { 업무: string; 탭: Tab; 절: string }[] = [
+  { 업무: '카카오뱅크 AI 데이터 모니터링', 탭: '추천 경로', 절: '관측 204건 · 시드별 전 턴 기록' },
+  { 업무: 'AI 고객 피드백 모니터링 및 개선사항 발굴', 탭: '개요', 절: '사용자가 신고할 수 있는가' },
+  { 업무: 'AI 모델 업데이트 시 AI 답변 검증', 탭: '골든셋', 절: '룰 채점 · 같은 질문을 다시 물으면' },
+  { 업무: '카카오뱅크 AI로 연결되는 선제안/추천 질문 콘텐츠 운영', 탭: '개요', 절: '추천이 닿지 않은 자리' },
+  { 업무: 'AI 답변에 활용되는 RAG 문서 생성 및 관리', 탭: 'RAG 문서', 절: '문서를 다시 쓰면 검색이 달라지는가' },
+]
 
 export default function App() {
-  const [tab, setTab] = useState<'개요' | '추천 경로' | 'RAG 문서' | '골든셋'>('개요')
+  const [tab, setTab] = useState<Tab>('개요')
   return (
     <>
       <div className="disclaimer">지원자 개인 분석 · 공개 데이터 기반 · 카카오뱅크와 무관</div>
@@ -37,10 +50,18 @@ export default function App() {
           reachmap<small>대화형 AI 답변 품질 관측</small>
         </h1>
         <p className="lede">
-          카카오뱅크 AI를 두 방식으로 관측했다. <b>추천 경로</b>는 매 턴 <b>첫 번째 추천만</b> 따라가며 5턴까지 간 것으로
-          1라운드 {회차턴(1)}턴 + 2라운드 {회차턴(2)}턴 = {총턴}턴이고, <b>골든셋</b>은 문항마다 대화를 초기화한 1턴짜리
-          독립 관측 {golden.length}문항이다. 답변 원문에 결정적 룰 6종을 돌렸다.
+          카카오뱅크 AI에 <b>질문 {총턴 + golden.length}개</b>를 넣고, 답변 원문을 결정적 룰로 채점했다.
           <b>2026년 8월 시점 관측이며 이미 개선됐을 수 있다.</b>
+        </p>
+        <p className="lede sub">
+          <b>추천 경로</b> 매 턴 첫 번째 추천만 따라가 5턴까지 — {회차턴(1)} + {회차턴(2)} = {총턴}턴 &nbsp;·&nbsp;
+          <b>골든셋</b> 문항마다 대화를 초기화한 1턴 독립 관측 {golden.length}문항
+        </p>
+        <p className="links out">
+          <a href="https://github.com/Junhee8649/reachmap" target="_blank" rel="noreferrer">저장소</a>
+          <a href="https://github.com/Junhee8649/reachmap/blob/main/docs/08-%EB%A6%AC%ED%8F%AC%ED%8A%B8.md" target="_blank" rel="noreferrer">리포트</a>
+          <a href="https://github.com/Junhee8649/reachmap/blob/main/docs/02-%EA%B2%B0%EC%A0%95%EA%B8%B0%EB%A1%9D.md" target="_blank" rel="noreferrer">결정 기록</a>
+          <a href="https://github.com/Junhee8649/reachmap/blob/main/docs/03-%EA%B4%80%EC%B8%A1-%ED%94%84%EB%A1%9C%ED%86%A0%EC%BD%9C.md" target="_blank" rel="noreferrer">관측 절차</a>
         </p>
       </header>
       <nav className="tabs">
@@ -51,16 +72,33 @@ export default function App() {
         ))}
       </nav>
       <main>
-        {tab === '개요' ? <개요 /> : tab === '추천 경로' ? <시드 /> : tab === 'RAG 문서' ? <Rag /> : <골든셋 />}
+        {tab === '개요' ? <개요 go={setTab} /> : tab === '추천 경로' ? <시드 /> : tab === 'RAG 문서' ? <Rag /> : <골든셋 />}
       </main>
     </>
   )
 }
 
-function 개요() {
+function 개요({ go }: { go: (t: Tab) => void }) {
   const 결함최대 = Math.max(...결함룰.map(r => 룰합[r]))
   return (
     <>
+      <section className="card">
+        <h2>공고의 담당업무를 어디서 다뤘나</h2>
+        <p className="note">
+          왼쪽은 채용공고 「담당할 업무」 다섯 줄 <b>원문 그대로</b>다. 누르면 그 화면으로 간다.
+        </p>
+        <ul className="jobmap">
+          {담당업무.map(m => (
+            <li key={m.업무}>
+              <span className="jd">{m.업무}</span>
+              <button onClick={() => go(m.탭)}>
+                {m.탭}<span className="sec">{m.절}</span>
+              </button>
+            </li>
+          ))}
+        </ul>
+      </section>
+
       <div className="tiles" style={{ marginBottom: 20 }}>
         <div className="tile">
           <div className="v">{Math.round((판정합.정답 / 총턴) * 100)}%</div>
@@ -148,6 +186,81 @@ function 개요() {
         <p className="note" style={{ marginTop: 12 }}>
           다른 기능으로 넘겨준 턴은 {인계.length}건이다 — {인계.join(' · ')}.
           <b> 넘겨주는 것과 알려주는 것은 다른 일</b>이고, 알려주는 쪽은 추천 질문 콘텐츠로 할 수 있는 일이다.
+        </p>
+      </section>
+
+      <section className="card">
+        <h2>사용자가 신고할 수 있는가</h2>
+        <p className="note">
+          답변에는 <b>싫어요</b> 버튼이 있고, 누르면 사유 세 칸이 뜬다 — <i>답변 내용이 정확하지 않음 · 설명이 부족함 ·
+          질문과 다른 내용을 답변함</i>. 룰이 잡은 것을 <b>그 세 칸에 미리 나눠 붙여</b> 봤다. 앱 스토어 리뷰는
+          두 스토어 모두 수집을 금지해 접었고, 대신 이 방법을 썼다.
+        </p>
+        <div className="bars">
+          {피드백.층.map(x => (
+            <Bar key={x.층} label={`${x.층} · ${x.턴수}턴`} value={x.건수}
+                 max={Math.max(...피드백.층.map(y => y.건수))} />
+          ))}
+        </div>
+        <p className="note" style={{ marginTop: 12 }}>
+          {피드백.칸.map(c => `${c.칸} ${c.건수}건`).join(' · ')}
+        </p>
+        <p className="note">
+          <b>B층 {피드백.층.find(x => x.층.startsWith('B'))?.건수}건이 이 표의 요점이다.</b> 글자까지 똑같은 추천이
+          다시 나오는 것은 사용자가 <b>보지만</b>, 세 칸은 전부 「답변」에 대한 것이라 신고할 칸이 없다 —
+          불만이 있어도 접수 경로가 없으니 <b>집계에 영원히 안 잡힌다.</b>
+          C층은 반대로 사용자에게 아예 안 보이는 표기 문제라, 도구로만 셀 수 있다.
+        </p>
+        <p className="note">
+          ⚠️ 여기서 세는 것은 <b>「사용자가 신고했다면 어느 칸이었을까」</b>이지 실제 신고가 아니다.
+          룰 → 칸 매핑은 집계를 보기 <b>전에</b> 고정했다 (<code>tools/feedback.py</code>).
+        </p>
+      </section>
+
+      <section className="card">
+        <h2>추천이 닿지 않은 자리</h2>
+        <p className="note">
+          카카오뱅크가 <b>FAQ 제목에 직접 붙인 태그</b> {커버리지.태그수}개와, 관측에서 실제로 뜬 추천 문구를 대조했다.
+          추천이 한 번이라도 닿은 태그는 <b>{커버리지.닿은태그}개</b>({커버리지.닿은문항.toLocaleString()}
+          /{커버리지.총문항.toLocaleString()}문항)다.
+        </p>
+        <p className="note">
+          🔴 <b>이건 카카오뱅크의 결함이 아니다.</b> 우리 시드 24개가 통장/저축에 쏠려 있어서 생긴 값이기도 하다.
+          이 표의 용도는 지적이 아니라 <b>추천 질문 콘텐츠를 새로 쓸 자리를 고르는 것</b>이다.
+        </p>
+        <div className="two">
+          <div>
+            <div className="lbl" style={{ marginBottom: 8 }}><b>추천이 한 번도 안 간 태그</b> — 문서가 많은 순</div>
+            <table className="heat gaptbl">
+              <tbody>
+                {커버리지.공백.map(t => (
+                  <tr key={t.태그}>
+                    <th className="row">{t.태그}</th>
+                    <td className="empty">{t.문항}문항</td>
+                    <td className="qcell">{t.분류}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+          <div>
+            <div className="lbl" style={{ marginBottom: 8 }}><b>추천이 몰린 태그</b> — 많은 순</div>
+            <table className="heat gaptbl">
+              <tbody>
+                {커버리지.닿음.map(t => (
+                  <tr key={t.태그}>
+                    <th className="row">{t.태그}</th>
+                    <td style={{ background: 'var(--h3)', color: 'var(--ht3)' }}>추천 {t.추천}</td>
+                    <td className="qcell">{t.문항}문항 · {t.분류}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <p className="note" style={{ marginTop: 12 }}>
+          문항 수는 <b>문서가 얼마나 쌓여 있는지</b>지 고객이 얼마나 묻는지가 아니다. 다만 문서가 100건 넘게 있는데
+          추천이 한 번도 그리로 가지 않았다면, <b>이미 있는 문서를 안 쓰고 있다</b>는 뜻은 된다.
         </p>
       </section>
 

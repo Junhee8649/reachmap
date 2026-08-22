@@ -176,3 +176,27 @@ table.heat td.qcell {
 .gbody { font-size: 14px; line-height: 1.65; padding: 2px 4px 14px; }
 .gbody p { margin: 0 0 8px; }
 .gbody .recs, .gbody .links { color: var(--ink-2); font-size: 13px; margin: 8px 0 0 18px; }
+
+/* 공고 담당업무 → 화면 매핑 */
+.jobmap { list-style: none; margin: 12px 0 0; padding: 0; display: grid; gap: 6px }
+.jobmap li { display: grid; grid-template-columns: 1fr auto; gap: 12px; align-items: center }
+.jobmap .jd { font-size: 13px; line-height: 1.5 }
+.jobmap button {
+  display: flex; flex-direction: column; align-items: flex-end; gap: 2px;
+  border: 1px solid var(--border); border-radius: 6px; background: var(--plane);
+  padding: 5px 10px; cursor: pointer; font: inherit; font-size: 12px; font-weight: 600;
+  color: var(--ink); white-space: nowrap;
+}
+.jobmap button:hover { border-color: var(--axis) }
+.jobmap .sec { font-weight: 400; font-size: 11px; color: var(--muted) }
+
+/* 머리말 바깥 링크 */
+.links.out { margin-top: 10px; display: flex; gap: 14px; flex-wrap: wrap }
+.links.out a { font-size: 13px }
+.lede.sub { font-size: 13px; color: var(--ink-2); margin-top: 4px }
+
+/* 커버리지 두 표 */
+.two { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-top: 8px }
+.gaptbl th.row { width: auto; text-align: left; padding-right: 10px }
+.gaptbl td { width: auto; white-space: nowrap }
+@media (max-width: 720px) { .two { grid-template-columns: 1fr } }

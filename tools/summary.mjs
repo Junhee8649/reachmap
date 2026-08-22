@@ -68,6 +68,32 @@ const 안내 = { O: 0, X: 0, 해당없음: 0 };
 for (const r of R2) if (r.기능안내 in 안내) 안내[r.기능안내]++;
 const 인계 = R2.filter(r => r.인계여부 === 'O').map(r => `${r.seed_id} ${r.turn}턴 → ${r.진입한_기능명}`);
 
-fs.writeFileSync('data/summary.json', JSON.stringify({ rag, 재현, 안내, 인계 }, null, 1));
+
+// ── 피드백 UI 3층 ────────────────────────────────────────────────
+// tools/feedback.py 가 낸 집계를 화면이 쓰는 모양으로만 옮긴다. 여기서 다시 세지 않는다 —
+// 두 곳에서 세면 두 값이 갈린다.
+const FB = JSON.parse(읽기('data/feedback-map.json'));
+const 피드백 = {
+  턴수: FB.턴수,
+  층: FB.집계.층별_건수와_고유수.map(x => ({ 층: x.층, 건수: x.건수, 턴수: x.턴수 })),
+  칸: FB.집계.A층_피드백_칸별.map(x => ({ 칸: x.칸, 건수: x.건수 })),
+};
+
+// ── 추천이 닿지 않은 자리 ────────────────────────────────────────
+// 태그는 카카오뱅크가 FAQ 제목에 직접 붙인 라벨이다. 우리 분류가 아니다.
+// 🔴 「추천 0」은 품질 지적이 아니다. 우리 시드가 통장/저축에 쏠린 결과이기도 하다.
+//    그래서 화면에도 그 문장을 같이 띄운다.
+const CV = JSON.parse(읽기('data/faq-coverage.json'));
+const 커버리지 = {
+  태그수: CV.태그수, 닿은태그: CV.닿은태그,
+  총문항: CV.총문항, 닿은문항: CV.닿은문항,
+  공백: CV.태그.filter(t => t.추천 === 0).sort((a, b) => b.문항 - a.문항).slice(0, 8)
+          .map(t => ({ 태그: t.태그, 문항: t.문항, 분류: t.cat })),
+  닿음: CV.태그.filter(t => t.추천 > 0).sort((a, b) => b.추천 - a.추천).slice(0, 5)
+          .map(t => ({ 태그: t.태그, 문항: t.문항, 추천: t.추천, 분류: t.cat })),
+};
+
+fs.writeFileSync('data/summary.json', JSON.stringify({ rag, 재현, 안내, 인계, 피드백, 커버리지 }, null, 1));
 console.log('→ data/summary.json');
 console.log(`  RAG 묶음 ${rag.length} · 재현성 ${재현.length}건 · 기능안내 O ${안내.O}/X ${안내.X} · 인계 ${인계.length}건`);
+console.log(`  피드백 3층 ${피드백.층.map(x => x.건수).join('/')} · 커버리지 태그 ${커버리지.닿은태그}/${커버리지.태그수}`);
