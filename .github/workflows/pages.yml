@@ -26,7 +26,10 @@ jobs:
           node-version: 22
           cache: npm
       - run: npm ci
-      # 문서에 적힌 숫자가 데이터와 맞는지 먼저 본다. 틀리면 배포하지 않는다.
+      # 대시보드가 쓰는 파생 수치를 원본에서 다시 계산한다. 커밋된 값과 갈라지면 여기서 드러난다.
+      - run: node tools/summary.mjs
+      - run: git diff --exit-code data/summary.json
+      # 문서에 적힌 숫자가 데이터와 맞는지 본다. 틀리면 배포하지 않는다.
       - run: node tools/check.mjs
       - run: npm run build
       - uses: actions/upload-pages-artifact@v3

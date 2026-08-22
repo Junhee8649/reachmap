@@ -107,6 +107,7 @@ npm run dev                  # 대시보드
 node tools/rag.mjs --v2                # RAG 문서 실험 — 공개 저장소에서 그대로 재현된다
 node tools/rag.mjs --묶음=적금 --v2     # 2차 실험 (다른 주제)
 node tools/score.mjs 1       # 채점기 — 공개한 원문 1건(S10)만 채점된다
+node tools/summary.mjs       # 대시보드가 쓰는 파생 수치를 원본에서 다시 계산한다
 node tools/check.mjs         # 문서에 적힌 숫자를 데이터와 대조한다
 ```
 

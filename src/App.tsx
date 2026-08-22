@@ -1,6 +1,5 @@
 import { useState } from 'react'
 import {
-  RULES,
   ids,
   seeds,
   총턴,
@@ -10,6 +9,14 @@ import {
   판정합,
   판정들,
   룰합,
+  결함룰,
+  표기룰,
+  결함합,
+  표기합,
+  rag,
+  재현,
+  안내,
+  인계,
   재탕합,
   룰히트,
   시드룰수,
@@ -23,7 +30,7 @@ import type { Seed, Turn } from './data'
 const 최대턴 = 5
 
 export default function App() {
-  const [tab, setTab] = useState<'개요' | '추천 경로' | '골든셋'>('개요')
+  const [tab, setTab] = useState<'개요' | '추천 경로' | 'RAG 문서' | '골든셋'>('개요')
   return (
     <>
       <div className="disclaimer">지원자 개인 분석 · 공개 데이터 기반 · 카카오뱅크와 무관</div>
@@ -39,20 +46,21 @@ export default function App() {
         </p>
       </header>
       <nav className="tabs">
-        {(['개요', '추천 경로', '골든셋'] as const).map(t => (
+        {(['개요', '추천 경로', 'RAG 문서', '골든셋'] as const).map(t => (
           <button key={t} aria-selected={tab === t} onClick={() => setTab(t)}>
             {t}
           </button>
         ))}
       </nav>
-      <main>{tab === '개요' ? <개요 /> : tab === '추천 경로' ? <시드 /> : <골든셋 />}</main>
+      <main>
+        {tab === '개요' ? <개요 /> : tab === '추천 경로' ? <시드 /> : tab === 'RAG 문서' ? <Rag /> : <골든셋 />}
+      </main>
     </>
   )
 }
 
 function 개요() {
-  const 룰최대 = Math.max(...Object.values(룰합))
-  const 룰총 = Object.values(룰합).reduce((a, b) => a + b, 0)
+  const 결함최대 = Math.max(...결함룰.map(r => 룰합[r]))
   return (
     <>
       <div className="tiles" style={{ marginBottom: 20 }}>
@@ -71,9 +79,11 @@ function 개요() {
           </div>
         </div>
         <div className="tile">
-          <div className="v">{룰총}</div>
-          <div className="k">룰 검출 건수</div>
-          <div className="sub">룰 6종 · 사람 판독 없이 재현됨</div>
+          <div className="v">{결함합}</div>
+          <div className="k">룰이 잡은 결함</div>
+          <div className="sub">
+            룰 5종 · 사람 판독 없이 재현됨. 헤더공백 {표기합}건은 <b>앱에서 정상 렌더돼 결함으로 세지 않는다</b>
+          </div>
         </div>
         <div className="tile">
           <div className="v">{재탕합.T1}</div>
@@ -88,10 +98,70 @@ function 개요() {
         <h2>룰별 검출 건수</h2>
         <p className="note">전부 문자열·산술 대조다. 같은 입력이면 같은 결과가 나온다.</p>
         <div className="bars">
-          {RULES.map(r => (
-            <Bar key={r} label={r} value={룰합[r]} max={룰최대} />
+          {결함룰.map(r => (
+            <Bar key={r} label={r} value={룰합[r]} max={결함최대} />
           ))}
         </div>
+        <p className="note" style={{ marginTop: 18 }}>
+          아래는 <b>결함으로 세지 않는 것</b>이다. 마크다운 헤더에 공백이 없지만(<code>##취소 방법</code>)
+          앱에서는 정상 렌더된다. 처음에는 위와 한 덩어리로 세어 건수를 부풀렸고, 확인한 뒤 층을 나눴다.
+        </p>
+        <div className="bars">
+          {표기룰.map(r => (
+            <Bar key={r} label={r} value={룰합[r]} max={룰합[r]} />
+          ))}
+        </div>
+      </section>
+
+      <section className="card">
+        <h2>같은 질문을 다시 물으면</h2>
+        <p className="note">
+          카카오뱅크는 <b>같은 질문에도 답이 매번 다를 수 있다</b>고 공식으로 밝히고 있다. 그래서 「답이 달랐다」는
+          발견이 아니다. 볼 것은 <b>어떤 회차는 상품·기능에 도착하고 어떤 회차는 못 도착하는가</b>다.
+        </p>
+        <table className="heat" style={{ marginTop: 8 }}>
+          <thead>
+            <tr>
+              <th />
+              <th>추천 문구</th>
+              <th>링크 유무</th>
+              <th>판정</th>
+              <th style={{ paddingLeft: 8, textAlign: 'left' }}>질문</th>
+            </tr>
+          </thead>
+          <tbody>
+            {재현.map((r, i) => (
+              <tr key={i}>
+                <th className="row">
+                  {r.시드} {r.회차}
+                </th>
+                <td className={r.추천같음 ? '' : 'empty'}>{r.추천같음 ? '같음' : '다름'}</td>
+                <td>{r.링크같음 ? '같음' : '다름'}</td>
+                <td>{r.판정같음 ? '같음' : '다름'}</td>
+                <td style={{ paddingLeft: 8, textAlign: 'left', width: 'auto' }}>{r.질문}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+        <p className="note" style={{ marginTop: 12 }}>
+          <b>추천 문구는 {재현.length}회차 전부 달랐고, 판정과 링크 유무는 전부 같았다.</b>
+          문구는 흔들리는데 사실과 도달은 흔들리지 않았다는 뜻이다. 표본이 {재현.length}건이라 여기까지만 말한다.
+        </p>
+      </section>
+
+      <section className="card">
+        <h2>있는 기능을 알려주는가</h2>
+        <p className="note">
+          답변이 <b>그 일을 대신해 줄 기능이 앱에 있다는 것</b>을 알려준 턴을 센다. 2라운드부터 칸이 생겨 47턴만 본다.
+        </p>
+        <div className="bars">
+          <Bar label="알려줌" value={안내.O} max={안내.O + 안내.X} />
+          <Bar label="안 알려줌" value={안내.X} max={안내.O + 안내.X} />
+        </div>
+        <p className="note" style={{ marginTop: 12 }}>
+          다른 기능으로 넘겨준 턴은 {인계.length}건이다 — {인계.join(' · ')}.
+          <b> 넘겨주는 것과 알려주는 것은 다른 일</b>이고, 알려주는 쪽은 추천 질문 콘텐츠로 할 수 있는 일이다.
+        </p>
       </section>
 
       <section className="card">
@@ -154,6 +224,64 @@ function 개요() {
           ))}
           3개 이상
         </div>
+      </section>
+    </>
+  )
+}
+
+function Rag() {
+  return (
+    <>
+      <section className="card">
+        <h2>문서를 다시 쓰면 검색이 달라지는가</h2>
+        <p className="note">
+          이 팀은 모델을 건드릴 수 없고 <b>문서와 추천 질문</b>을 손댄다. 그래서 물어볼 것은 하나다 —
+          문서를 어떻게 써야 AI가 찾아 쓰는가. 카카오뱅크 공개 FAQ 26건을 <b>내용은 한 글자도 바꾸지 않고</b>
+          표현만 다시 쓴 뒤, 직접 만든 검색기로 원본과 나란히 돌렸다.
+        </p>
+        {rag.map(m => (
+          <div key={m.이름} style={{ marginTop: 18 }}>
+            <div className="lbl" style={{ marginBottom: 8 }}>
+              <b>{m.이름}</b>
+            </div>
+            <div className="bars">
+              <Bar label={`FAQ 제목 그대로 · 원본`} value={m.제목.원본} max={m.제목.n} />
+              <Bar label={`FAQ 제목 그대로 · 다시 씀`} value={m.제목.재작성} max={m.제목.n} />
+              <Bar label={`대화에 뜬 문구 · 원본`} value={m.추천.원본} max={m.추천.n} />
+              <Bar label={`대화에 뜬 문구 · 다시 씀`} value={m.추천.재작성} max={m.추천.n} />
+            </div>
+          </div>
+        ))}
+        <p className="note" style={{ marginTop: 16 }}>
+          <b>원본 문서는 자기 제목으로 물을 때만 완벽했다.</b> 같은 사실을 대화에서 실제로 뜬 문구로 물으면
+          절반 가까이가 엉뚱한 문서를 1위로 내놓았고, <b>주제가 다른 두 묶음에서 같은 모양</b>이 나왔다.
+        </p>
+      </section>
+
+      <section className="card">
+        <h2>그런데 1차 결과는 부풀려져 있었다</h2>
+        <p className="note">
+          1차에서는 문서에 넣은 문구가 채점에 쓸 질문과 거의 같았다. <b>시험 문제를 교과서에 적어놓고 시험을 본 셈</b>이다.
+          2차는 문서를 쓰기 전에 질문을 갈라, 검증용은 문서를 쓰는 동안 열지도 않았다.
+        </p>
+        {rag
+          .filter(m => m.작성용 && m.검증용)
+          .map(m => (
+            <div key={m.이름} className="bars">
+              <Bar label="작성용 — 문서에 넣은 질문 · 원본" value={m.작성용!.원본} max={m.작성용!.n} />
+              <Bar label="작성용 — 문서에 넣은 질문 · 다시 씀" value={m.작성용!.재작성} max={m.작성용!.n} />
+              <Bar label="검증용 — 안 넣은 질문 · 원본" value={m.검증용!.원본} max={m.검증용!.n} />
+              <Bar label="검증용 — 안 넣은 질문 · 다시 씀" value={m.검증용!.재작성} max={m.검증용!.n} />
+            </div>
+          ))}
+        <p className="note" style={{ marginTop: 16 }}>
+          <b>같은 문서, 같은 재작성인데 두 배 차이다.</b> 개선은 있지만 폭이 절반으로 줄어든다.
+          1차 수치를 지우지 않고 두되, 분할 없이 잰 값임을 리포트에 밝혔다.
+        </p>
+        <p className="note">
+          ⚠️ 문서에 넣은 문구 35개 중 <b>28개는 관측에 없는, 우리가 지어낸 말</b>이다(1차에 몰려 있다).
+          전수 표는 저장소의 <code>data/rag/docs-v2/_문구출처.md</code> 에 있다.
+        </p>
       </section>
     </>
   )
