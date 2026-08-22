@@ -24,6 +24,18 @@ const 판정수 = v => R1.filter(r => r.판정 === v).length;
 //    README를 204턴 기준으로 고치자 그제서야 빨간 줄이 떴다. 전체 기준을 따로 둔다.
 const 전량 = [...R1, ...R2, ...GOLD];
 const 전량판정 = v => 전량.filter(r => r.판정 === v).length;
+// 도달 수치는 채점 결과(**답변 원문에서 기계가 센 값**)에서 가져온다.
+// 🔴 전체 채점본(data/scored-*.json)은 원문이 들어 있어 공개하지 않는다(.gitignore).
+//    그래서 공개본을 먼저 보고, 없을 때만 전체본으로 떨어진다 — CI(clean clone)에서도 돌아야 하기 때문이다.
+//    두 파일의 링크 수가 같은 것은 확인했다(58 / 26).
+const 채점 = (...후보) => { for (const f of 후보) if (fs.existsSync(f)) return JSON.parse(읽기(f)); return null; };
+const 링크센다 = d => d ? Object.values(d).filter(v => Array.isArray(v?.턴)).reduce((n, v) => n + v.턴.filter(t => t.링크?.length).length, 0) : null;
+const S1 = 채점('data/scored-round1.public.json', 'data/scored-round1.json');
+const S2 = 채점('data/scored-round2.public.json', 'data/scored-round2.json');
+const 링크턴 = (링크센다(S1) ?? 0) + (링크센다(S2) ?? 0);
+// 골든셋 공개본에는 링크 칸이 없다. CSV 의 딥링크_개수로 센다 — 채점기와 같은 45가 나오는 것을 확인했다.
+const 링크문항 = GOLD.filter(r => Number(r.딥링크_개수 || 0) > 0).length;
+
 const raw1 = fs.existsSync('data/raw/round1') ? fs.readdirSync('data/raw/round1').filter(f => f.endsWith('.txt')) : null;
 
 const 문서 = ['README.md', 'data/README.md', ...fs.readdirSync('docs').filter(f => f.endsWith('.md')).map(f => `docs/${f}`)]
@@ -41,7 +53,14 @@ const 주장 = [
   ['전량 총 턴수', /질문 (\d+)개를 넣어봤습니다|질문 \*\*(\d+)개\*\*를|채점 대상은 \*\*(\d+)턴\*\*|합계 (\d+)개/g, 전량.length],
   // 캡처는 하나만 둔다 — 실행기가 「처음 정의된 캡처」를 값으로 쓰므로 턴수까지 잡으면 엉뚱한 값이 온다
   ['전량 판정 정답', /\d+턴 중 정답 (\d+) ?· ?부분/g, 전량판정('정답')],
-  ['도달한 턴', /도달한 턴 \*\*(\d+)%\*\*|앱기능_진입 = O` ?인 턴은 (\d+)개/g, R1.filter(r => r.앱기능_진입 === 'O').length],
+  // 🔴 2026-08-22 — 이 자리에 원래 백분율(63%)과 1라운드 건수(61)를 비교하는 규칙이 있었다.
+  //    형이 달라 애초에 성립하지 않는 대조였고, 그래서 「84 vs 89」를 못 잡았다.
+  //    도달 수치의 출처는 **채점기가 답변 원문에서 센 값**이다(CSV의 앱기능_진입이 아니다).
+  //    두 값이 5턴 다른 것은 원문에 링크 카드가 안 남은 턴 때문이고, 그건 「못 잡는 것」에 적혀 있다.
+  ['도달한 턴 (원문 기준)', /링크가 붙은 턴 +(\d+) ?\/ ?144/g, 링크턴],
+  ['도달 문항 (원문 기준)', /링크가 붙은 문항 +(\d+) ?\/ ?60/g, 링크문항],
+  ['도달 합계', / \((\d+)턴\) \|/g, 링크턴 + 링크문항],
+  ['링크 없이 끝난 턴', /204개 중 \*\*(\d+)개\*\*가 상품 바로가기 없이/g, 204 - 링크턴 - 링크문항],
   ['2라운드 행수', /(\d+)행 \/ 19컬럼|기록지 (\d+)행/g, R2rows.length],
   ['2라운드 컬럼수', /(\d+)컬럼이다|총 (\d+)컬럼/g, Object.keys(R2rows[0]).length],
   ['1라운드 원문 파일 수', /\((\d+)파일/g, raw1 ? raw1.length : null],
@@ -146,9 +165,19 @@ const 경로들 = new Set();
 for (const p of 문서)
   for (const m of 읽기(p).matchAll(/`((?:data|tools|src|docs)\/[A-Za-z0-9가-힣._\/-]+)`/g)) 경로들.add(m[1]);
 // 확장자가 없는 것은 산문의 약칭(docs/03 참조)이지 경로가 아니다
-const 없는경로 = [...경로들].filter(c => /\.[a-z]+$/.test(c) && !fs.existsSync(c) && !c.includes('<'));
-if (없는경로.length) { 실패++; 없는경로.forEach(c => console.log(`  🔴 ${c}`)); }
-else console.log(`  ✅ ${경로들.size}개 경로 전부 실재`);
+let 없는경로 = [...경로들].filter(c => /\.[a-z]+$/.test(c) && !fs.existsSync(c) && !c.includes('<'));
+// 🔴 일부러 로컬에만 두는 파일(원문이 든 채점 결과 등)은 clean clone 에 없는 게 정상이다.
+//    .gitignore 를 손으로 흉내 내지 않고 git 에게 직접 묻는다. git 이 없으면 이 완화를 건너뛴다.
+if (없는경로.length) {
+  try {
+    const 무시됨 = new Set(
+      execSync('git check-ignore --stdin', { input: 없는경로.join('\n'), encoding: 'utf8' })
+        .split('\n').map(x => x.trim()).filter(Boolean));
+    없는경로 = 없는경로.filter(c => !무시됨.has(c));
+  } catch { /* 전부 추적 대상이면 git 이 exit 1 을 낸다 — 그대로 둔다 */ }
+}
+if (없는경로.length) { 실패++; 없는경로.forEach(c => console.log(`  🔴 ${c} — 문서가 가리키는데 없다`)); }
+else console.log(`  ✅ ${경로들.size}개 경로 전부 실재 (의도적으로 비공개인 것 제외)`);
 
 console.log('\n■ 과장 표현 — 판정이 아니라 검토 목록이다');
 // 실제로 이 프로젝트에서 사고를 낸 표현만 남긴다.

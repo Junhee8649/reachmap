@@ -41,8 +41,11 @@ const 적용하기 = s => 치환.reduce((t, [a, b]) => t.split(a).join(b), s);
 //
 // 🔴 core.quotePath=false 가 없으면 한글 파일명이 "docs/01-\354\202\254…" 처럼
 //    이스케이프돼 확장자 검사에서 통째로 걸러진다. 처음에 md 파일이 전부 건너뛰어졌다.
+// 🔴 docs/05 는 **이 도구가 무엇을 바꾸는지 설명하는 문서**다. 치환표를 본문에 인용하고 있어서
+//    돌리면 자기 설명을 자기가 망가뜨린다. 실제로 미리보기에서 4건이 잡혔다 (2026-08-22).
+const 자기설명 = ['docs/05-공개목록.md'];
 const 대상 = execSync('git -c core.quotePath=false ls-files', { encoding: 'utf8' })
-  .split('\n').filter(f => /\.(md|csv)$/.test(f));
+  .split('\n').filter(f => /\.(md|csv)$/.test(f) && !자기설명.includes(f));
 
 let 총건수 = 0;
 const 보고 = [];
