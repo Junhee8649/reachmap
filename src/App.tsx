@@ -100,7 +100,7 @@ function 개요({ go }: { go: (t: Tab) => void }) {
         <div className="tile">
           <div className="v">{결함합}</div>
           <div className="k">룰이 잡은 결함</div>
-          <div className="sub">룰 5종 · 사람 판독 없이 재현됨</div>
+          <div className="sub">룰 {결함룰.length}종 · 사람 판독 없이 재현됨</div>
         </div>
         <div className="tile">
           <div className="v">{재탕합.T1}</div>
@@ -129,7 +129,9 @@ function 개요({ go }: { go: (t: Tab) => void }) {
       <section className="card">
         <h2>룰이 잡은 {피드백.층.reduce((a, x) => a + x.건수, 0)}건 — 사용자는 그중 무엇을 보나</h2>
         <p className="note">
-          답변에는 <b>싫어요</b> 버튼이 있고 사유 세 칸이 뜬다. 룰이 잡은 것을 <b>그 세 칸에 미리 나눠 붙여</b> 봤다.
+          답변에는 <b>싫어요</b> 버튼이 있고, 누르면 사유를 고르는 칸이 뜬다 —
+          <b>① 답변 내용이 정확하지 않음 · ② 설명이 부족함 · ③ 질문과 다른 내용을 답변함.</b>
+          룰이 잡은 것을 <b>이 세 칸에 미리 나눠 붙여</b> 봤다.
         </p>
         <div className="bars">
           {피드백.층.map(x => (
@@ -145,6 +147,10 @@ function 개요({ go }: { go: (t: Tab) => void }) {
             <Bar key={r} label={r} value={룰합[r]} max={결함최대} />
           ))}
         </div>
+        <p className="note" style={{ marginTop: 8 }}>
+          칸으로는 {피드백.칸.map(c => `${c.칸} ${c.건수}건`).join(' · ')}으로 갈린다.
+          <b> ③번은 0건이다</b> — 룰이 「질문과 다른 답」을 보는 눈을 아직 갖고 있지 않다.
+        </p>
         <p className="note" style={{ marginTop: 14 }}>
           <b>요점은 B층이다.</b> 글자까지 똑같은 추천이 다시 나오는 것은 사용자가 <b>보는데</b>,
           세 칸이 전부 「답변」에 대한 것이라 <b>신고할 칸이 없다</b> — 불만이 있어도 집계에 안 잡힌다.
@@ -195,7 +201,7 @@ function 개요({ go }: { go: (t: Tab) => void }) {
       <section className="card">
         <h2>있는 기능을 알려주는가</h2>
         <p className="note">
-          답변이 <b>그 일을 대신해 줄 기능이 앱에 있다는 것</b>을 알려준 턴을 센다. 2라운드부터 칸이 생겨 47턴만 본다.
+          답변이 <b>그 일을 대신해 줄 기능이 앱에 있다는 것</b>을 알려준 턴을 센다. 2라운드부터 칸이 생겼고, 해당되는 턴만 본다.
         </p>
         <p className="big">
           {안내.O + 안내.X}턴 중 <b>{안내.O}턴</b>
@@ -364,8 +370,8 @@ function Rag() {
             </div>
           ))}
         <p className="note" style={{ marginTop: 16 }}>
-          <b>같은 문서, 같은 재작성인데 두 배 차이다.</b> 개선은 있지만 폭이 절반으로 줄어든다.
-          1차 수치를 지우지 않고 두되, 분할 없이 잰 값임을 리포트에 밝혔다.
+          <b>고친 효과는 양쪽 다 +1건으로 같았다. 다른 것은 출발점이다</b> — 작성용은 이미 4/5였고
+          검증용은 1/4였다. 1차 수치는 지우지 않고 두되, 분할 없이 잰 값임을 리포트에 밝혔다.
         </p>
         <p className="note">
           ⚠️ 문서에 넣은 문구 35개 중 <b>28개는 관측에 없는, 우리가 지어낸 말</b>이다(1차에 몰려 있다).
@@ -511,7 +517,7 @@ function 골든셋() {
           <div className="v">{golden.length}</div>
           <div className="k">문항</div>
           <div className="sub">
-            {Object.entries(골든판정).map(([k, v]) => `${k} ${v}`).join(' · ')}
+            {Object.entries(골든판정).map(([k, v]) => `${k === '-' ? '이관' : k} ${v}`).join(' · ')}
           </div>
         </div>
         <div className="tile">
@@ -521,10 +527,8 @@ function 골든셋() {
         </div>
         <div className="tile">
           <div className="v">{기준일}</div>
-          <div className="k">기준일을 밝힌 문항</div>
-          <div className="sub">
-            금리·수수료·환율을 말하면서 언제 기준인지 밝힌 것은 {golden.length}개 중 {기준일}개다
-          </div>
+          <div className="k">근거를 밝힌 문항</div>
+          <div className="sub">{기준일}개 중 6개가 기준일 표기다</div>
         </div>
       </div>
 
