@@ -129,13 +129,33 @@ function 개요({ go }: { go: (t: Tab) => void }) {
       </div>
 
       <section className="card">
-        <h2>룰별 검출 건수</h2>
-        <p className="note">전부 문자열·산술 대조다. 같은 입력이면 같은 결과가 나온다.</p>
+        <h2>룰이 잡은 {피드백.층.reduce((a, x) => a + x.건수, 0)}건 — 사용자는 그중 무엇을 보나</h2>
+        <p className="note">
+          답변에는 <b>싫어요</b> 버튼이 있고 사유 세 칸이 뜬다. 룰이 잡은 것을 <b>그 세 칸에 미리 나눠 붙여</b> 봤다.
+        </p>
         <div className="bars">
+          {피드백.층.map(x => (
+            <Bar key={x.층} label={x.층} value={x.건수} max={Math.max(...피드백.층.map(y => y.건수))} />
+          ))}
+        </div>
+        <p className="note" style={{ marginTop: 14 }}>
+          <b>A층 {룰합.기준일없음 + 룰합.예시휘발 + 룰합.공시범위밖 + 룰합.내부용어 + 룰합.표검산}건의 내역</b> —
+          전부 문자열·산술 대조라 같은 입력이면 같은 결과가 나온다.
+        </p>
+        <div className="bars sub">
           {결함룰.map(r => (
             <Bar key={r} label={r} value={룰합[r]} max={결함최대} />
           ))}
         </div>
+        <p className="note" style={{ marginTop: 14 }}>
+          <b>요점은 B층이다.</b> 글자까지 똑같은 추천이 다시 나오는 것은 사용자가 <b>보는데</b>,
+          세 칸이 전부 「답변」에 대한 것이라 <b>신고할 칸이 없다</b> — 불만이 있어도 집계에 안 잡힌다.
+          C층(헤더공백)은 반대로 사용자에게 안 보여서 도구로만 센다. 그래서 결함으로 세지 않는다.
+        </p>
+        <p className="note">
+          ⚠️ 여기서 세는 것은 <b>「사용자가 신고했다면 어느 칸이었을까」</b>이지 실제 신고가 아니다.
+          룰 → 칸 매핑은 집계를 보기 <b>전에</b> 고정했다 (<code>tools/feedback.py</code>).
+        </p>
       </section>
 
       <section className="card">
@@ -179,41 +199,12 @@ function 개요({ go }: { go: (t: Tab) => void }) {
         <p className="note">
           답변이 <b>그 일을 대신해 줄 기능이 앱에 있다는 것</b>을 알려준 턴을 센다. 2라운드부터 칸이 생겨 47턴만 본다.
         </p>
-        <div className="bars">
-          <Bar label="알려줌" value={안내.O} max={안내.O + 안내.X} />
-          <Bar label="안 알려줌" value={안내.X} max={안내.O + 안내.X} />
-        </div>
-        <p className="note" style={{ marginTop: 12 }}>
+        <p className="big">
+          {안내.O + 안내.X}턴 중 <b>{안내.O}턴</b>
+        </p>
+        <p className="note">
           다른 기능으로 넘겨준 턴은 {인계.length}건이다 — {인계.join(' · ')}.
           <b> 넘겨주는 것과 알려주는 것은 다른 일</b>이고, 알려주는 쪽은 추천 질문 콘텐츠로 할 수 있는 일이다.
-        </p>
-      </section>
-
-      <section className="card">
-        <h2>사용자가 신고할 수 있는가</h2>
-        <p className="note">
-          답변에는 <b>싫어요</b> 버튼이 있고, 누르면 사유 세 칸이 뜬다 — <i>답변 내용이 정확하지 않음 · 설명이 부족함 ·
-          질문과 다른 내용을 답변함</i>. 룰이 잡은 것을 <b>그 세 칸에 미리 나눠 붙여</b> 봤다. 앱 스토어 리뷰는
-          두 스토어 모두 수집을 금지해 접었고, 대신 이 방법을 썼다.
-        </p>
-        <div className="bars">
-          {피드백.층.map(x => (
-            <Bar key={x.층} label={`${x.층} · ${x.턴수}턴`} value={x.건수}
-                 max={Math.max(...피드백.층.map(y => y.건수))} />
-          ))}
-        </div>
-        <p className="note" style={{ marginTop: 12 }}>
-          {피드백.칸.map(c => `${c.칸} ${c.건수}건`).join(' · ')}
-        </p>
-        <p className="note">
-          <b>B층 {피드백.층.find(x => x.층.startsWith('B'))?.건수}건이 이 표의 요점이다.</b> 글자까지 똑같은 추천이
-          다시 나오는 것은 사용자가 <b>보지만</b>, 세 칸은 전부 「답변」에 대한 것이라 신고할 칸이 없다 —
-          불만이 있어도 접수 경로가 없으니 <b>집계에 영원히 안 잡힌다.</b>
-          C층은 반대로 사용자에게 아예 안 보이는 표기 문제라, 도구로만 셀 수 있다.
-        </p>
-        <p className="note">
-          ⚠️ 여기서 세는 것은 <b>「사용자가 신고했다면 어느 칸이었을까」</b>이지 실제 신고가 아니다.
-          룰 → 칸 매핑은 집계를 보기 <b>전에</b> 고정했다 (<code>tools/feedback.py</code>).
         </p>
       </section>
 

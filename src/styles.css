@@ -200,3 +200,7 @@ table.heat td.qcell {
 .gaptbl th.row { width: auto; text-align: left; padding-right: 10px }
 .gaptbl td { width: auto; white-space: nowrap }
 @media (max-width: 720px) { .two { grid-template-columns: 1fr } }
+
+/* 한 카드 안의 보조 막대 — 위 막대의 세부 내역 */
+.bars.sub { margin-left: 14px; border-left: 2px solid var(--grid); padding-left: 14px }
+.big { font-size: 26px; font-weight: 700; margin: 6px 0 2px }
