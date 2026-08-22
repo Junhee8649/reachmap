@@ -10,9 +10,7 @@ import {
   판정들,
   룰합,
   결함룰,
-  표기룰,
   결함합,
-  표기합,
   rag,
   재현,
   안내,
@@ -81,9 +79,7 @@ function 개요() {
         <div className="tile">
           <div className="v">{결함합}</div>
           <div className="k">룰이 잡은 결함</div>
-          <div className="sub">
-            룰 5종 · 사람 판독 없이 재현됨. 헤더공백 {표기합}건은 <b>앱에서 정상 렌더돼 결함으로 세지 않는다</b>
-          </div>
+          <div className="sub">룰 5종 · 사람 판독 없이 재현됨</div>
         </div>
         <div className="tile">
           <div className="v">{재탕합.T1}</div>
@@ -100,15 +96,6 @@ function 개요() {
         <div className="bars">
           {결함룰.map(r => (
             <Bar key={r} label={r} value={룰합[r]} max={결함최대} />
-          ))}
-        </div>
-        <p className="note" style={{ marginTop: 18 }}>
-          아래는 <b>결함으로 세지 않는 것</b>이다. 마크다운 헤더에 공백이 없지만(<code>##취소 방법</code>)
-          앱에서는 정상 렌더된다. 처음에는 위와 한 덩어리로 세어 건수를 부풀렸고, 확인한 뒤 층을 나눴다.
-        </p>
-        <div className="bars">
-          {표기룰.map(r => (
-            <Bar key={r} label={r} value={룰합[r]} max={룰합[r]} />
           ))}
         </div>
       </section>

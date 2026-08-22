@@ -13,12 +13,17 @@ import summary from '../data/summary.json'
 
 export const RULES = ['헤더공백', '내부용어', '예시휘발', '기준일없음', '표검산', '공시범위밖'] as const
 /**
- * 🔴 헤더공백은 결함이 아니다. 처음에는 6종을 한 덩어리로 세어 227건이라고 썼는데,
- * 절반 이상이 이것이었고 앱에서는 정상 렌더된다(관측자 직접 확인). 숫자를 부풀린 것이라 층을 나눴다.
- * 근거는 tools/feedback.py 머리말. 화면도 리포트와 같은 기준으로 세야 해서 여기서 가른다.
+ * 🔴 헤더공백은 여기 없다. 결함이 아니기 때문이다.
+ *
+ * 처음에는 6종을 한 덩어리로 세어 「결함 227건」이라고 썼다. 검증해보니 절반 이상이 헤더공백이었고,
+ * 그것은 **앱에서 제목으로 정상 렌더된다**(관측자 직접 확인 · tools/feedback.py 머리말).
+ * CommonMark 기준으로는 `##제목` 이 헤더가 아니지만 이 앱의 렌더러가 관대하다 —
+ * 즉 모델이 낸 마크다운이 비표준인 것은 사실이나 **사용자에게는 보이지 않는다.**
+ *
+ * 탐지는 tools/lib/rules.mjs 에 그대로 남겨 둔다. 지우면 문서가 말하는 130건을 아무도 재현할 수 없다.
+ * 화면에서만 뺀다 — 결함이 아닌 것을 결함 옆에 두면 눈금을 먹고, 실제 발견(내부용어 1·표검산 1)이 안 보인다.
  */
 export const 결함룰 = ['기준일없음', '예시휘발', '공시범위밖', '내부용어', '표검산'] as const
-export const 표기룰 = ['헤더공백'] as const
 export type RuleName = (typeof RULES)[number]
 
 /** 룰이 잡은 한 건. 룰마다 붙는 필드가 달라 전부 옵셔널이다 */
@@ -77,9 +82,8 @@ export const 판정합 = Object.fromEntries(
 export const 룰합 = Object.fromEntries(
   RULES.map(r => [r, runs.reduce((a, s) => a + s[r].length, 0)]),
 ) as Record<RuleName, number>
-/** 결함으로 세는 것만 합한다. 헤더공백은 따로 본다 */
+/** 결함으로 세는 것만 합한다 */
 export const 결함합 = 결함룰.reduce((a, r) => a + 룰합[r], 0)
-export const 표기합 = 표기룰.reduce((a, r) => a + 룰합[r], 0)
 
 export const 재탕합 = { T1: 0, T2: 0, T3: 0 }
 for (const s of runs) for (const k of ['T1', 'T2', 'T3'] as const) 재탕합[k] += s.재탕[k].length
