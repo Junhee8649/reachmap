@@ -168,10 +168,13 @@ for (const p of 문서)
 let 없는경로 = [...경로들].filter(c => /\.[a-z]+$/.test(c) && !fs.existsSync(c) && !c.includes('<'));
 // 🔴 일부러 로컬에만 두는 파일(원문이 든 채점 결과 등)은 clean clone 에 없는 게 정상이다.
 //    .gitignore 를 손으로 흉내 내지 않고 git 에게 직접 묻는다. git 이 없으면 이 완화를 건너뛴다.
+// 🔴 core.quotePath=false 가 없으면 git 이 한글 경로를 "docs/00-ê³µ…" 로 escape 해 돌려줘
+//    문자열 비교가 어긋난다. 로컬에서는 파일이 있어 이 분기를 안 타고, CI 에서만 터졌다 (2026-08-22).
+//    tone.mjs 에 같은 함정이 이미 주석으로 있었는데 여기서 또 밟았다.
 if (없는경로.length) {
   try {
     const 무시됨 = new Set(
-      execSync('git check-ignore --stdin', { input: 없는경로.join('\n'), encoding: 'utf8' })
+      execSync('git -c core.quotePath=false check-ignore --stdin', { input: 없는경로.join('\n'), encoding: 'utf8' })
         .split('\n').map(x => x.trim()).filter(Boolean));
     없는경로 = 없는경로.filter(c => !무시됨.has(c));
   } catch { /* 전부 추적 대상이면 git 이 exit 1 을 낸다 — 그대로 둔다 */ }
